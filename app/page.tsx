@@ -218,14 +218,14 @@ export default function Home() {
       </div>
 
       {/* ── BIZ CTA ── */}
-      <div className="grid cursor-pointer hover:bg-[var(--sand)] transition-colors px-4 py-5 gap-4"
-        style={{ gridTemplateColumns: '1fr auto', borderBottom: '2px solid var(--ink)', background: 'var(--warm-white)' }}>
+      <Link href="/listings/new" className="grid hover:bg-[var(--sand)] transition-colors px-4 py-5 gap-4"
+        style={{ gridTemplateColumns: '1fr auto', borderBottom: '2px solid var(--ink)', background: 'var(--warm-white)', textDecoration: 'none' }}>
         <div>
           <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: '0.98rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 3, lineHeight: 1.25 }}>{t(ui.bizHed)}</div>
           <div style={{ fontSize: '0.7rem', color: 'var(--muted)', lineHeight: 1.5 }}>{t(ui.bizSub)}</div>
         </div>
         <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: '2.2rem', color: 'var(--coral)', lineHeight: 1 }}>→</div>
-      </div>
+      </Link>
 
       <div className="h-24" />
       <BottomNav />
