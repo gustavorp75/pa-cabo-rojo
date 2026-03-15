@@ -45,8 +45,14 @@ export default function BeachDetailPage({ params }: { params: Promise<{ slug: st
 
       {/* ── HERO ── */}
       <div className="relative overflow-hidden" style={{ minHeight: 260, background: `linear-gradient(160deg, ${gradStart}, ${gradEnd})`, borderBottom: '3px solid var(--ink)' }}>
-        <div className="absolute -top-12 -right-12 w-56 h-56 rounded-full opacity-10" style={{ border: '40px solid var(--teal-light)' }} />
-        <div className="absolute -bottom-16 -left-8 w-44 h-44 rounded-full opacity-10" style={{ border: '30px solid var(--gold)' }} />
+        {/* real photo with gradient fallback */}
+        <img
+          src={`/images/beaches/${beach.slug}.jpg`}
+          alt={name}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 60%' }}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(10,20,15,0.1) 0%, rgba(10,20,15,0.65) 100%)' }} />
         <div className="relative z-10 p-5 pt-8 flex flex-col justify-end" style={{ minHeight: 260 }}>
           <div className="mb-3">
             <span className="rounded-sm text-white"

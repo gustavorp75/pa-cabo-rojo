@@ -995,3 +995,22 @@ export const pinTypeMeta: Record<PinType, { es: string; en: string; color: strin
   attraction: { es: 'Atracciones', en: 'Attractions',  color: '#0d2d3f', emoji: '📍' },
   event:      { es: 'Eventos',     en: 'Events',       color: '#e05a3a', emoji: '🎉' },
 }
+
+
+// ── PHOTO ATTRIBUTIONS ───────────────────────────────────
+export const photoCredits: Record<string, { author: string; license: string; url: string }> = {
+  'playa-sucia':        { author: 'Jorge Gonzalez', license: 'CC BY-SA 2.0', url: 'https://creativecommons.org/licenses/by-sa/2.0' },
+  'playa-buye':         { author: 'Jerjes Medina Albino', license: 'CC BY-SA 3.0', url: 'https://creativecommons.org/licenses/by-sa/3.0' },
+  'combate':            { author: 'Jerjes Medina Albino', license: 'CC BY-SA 3.0', url: 'https://creativecommons.org/licenses/by-sa/3.0' },
+  'balneario':          { author: 'Oquendo', license: 'CC BY 2.0', url: 'https://creativecommons.org/licenses/by/2.0' },
+  'playuela':           { author: 'Rinopisanogarcia', license: 'CC BY-SA 3.0', url: 'https://creativecommons.org/licenses/by-sa/3.0' },
+  'faro-los-morrillos': { author: 'ForgottenColorado', license: 'CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0' },
+  'las-salinas':        { author: 'José Gilberto Martínez / USFWS', license: 'Public Domain', url: '' },
+  'pueblo-boqueron':    { author: 'Jerjes Medina Albino', license: 'CC BY-SA 3.0', url: 'https://creativecommons.org/licenses/by-sa/3.0' },
+  'kioskos':            { author: 'Eric Ardito', license: 'Unsplash License', url: 'https://unsplash.com/license' },
+  'mariscos':           { author: 'Casey Lee', license: 'Unsplash License', url: 'https://unsplash.com/license' },
+  'shamar':             { author: 'Jeremias Ybanez', license: 'Unsplash License', url: 'https://unsplash.com/license' },
+  'galloways':          { author: 'Louis Hansel', license: 'Unsplash License', url: 'https://unsplash.com/license' },
+  'hero-main':          { author: 'Alexis Antonio', license: 'Unsplash License', url: 'https://unsplash.com/license' },
+  'hero-main2':         { author: 'Cristian Escobar', license: 'Unsplash License', url: 'https://unsplash.com/license' },
+}

@@ -25,8 +25,13 @@ export default function PlayasPage() {
           return (
             <Link key={b.slug} href={`/playas/${b.slug}`}
               className="border-r border-b border-[var(--rule)] [&:nth-child(2n)]:border-r-0 [&:nth-last-child(-n+2)]:border-b-0 overflow-hidden group">
-              <div className={`h-[110px] relative bg-gradient-to-br ${b.gradient} flex items-center justify-center`}>
-                <span className="text-[4rem] opacity-25 group-hover:scale-105 transition-transform">{b.emoji}</span>
+              <div className={`h-[110px] relative bg-gradient-to-br ${b.gradient} flex items-center justify-center overflow-hidden`}>
+                <img
+                  src={`/images/beaches/${b.slug}.jpg`}
+                  alt={lang === 'es' ? b.nameEs : b.nameEn}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.5) 100%)' }} />
                 <span className="absolute bottom-2 left-2 z-10 font-condensed text-[0.6rem] font-bold tracking-[0.1em] uppercase px-2 py-0.5 rounded-sm text-white"
                       style={{ background: st.color }}>

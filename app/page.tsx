@@ -18,8 +18,19 @@ export default function Home() {
 
       {/* ── HERO ── */}
       <div className="relative overflow-hidden" style={{ minHeight: 260, background: 'linear-gradient(160deg,#0a3d52,#1a9b8a)', borderBottom: '3px solid var(--ink)' }}>
-        <div className="absolute -top-10 -right-10 w-52 h-52 rounded-full opacity-10" style={{ border: '40px solid var(--teal-light)' }} />
-        <div className="absolute -bottom-14 -left-8 w-44 h-44 rounded-full opacity-10" style={{ border: '30px solid var(--gold)' }} />
+        {/* hero photo */}
+        <img
+          src="/images/hero/hero-main2.jpg"
+          alt="Boquerón beach aerial view"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%' }}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+        {/* dark overlay so text pops */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(10,20,15,0.3) 0%, rgba(10,20,15,0.7) 100%)' }} />
+        {/* photo credit */}
+        <div style={{ position: 'absolute', top: 8, right: 10, zIndex: 3, fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.52rem', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.4)', background: 'rgba(0,0,0,0.25)', padding: '2px 6px', borderRadius: 2 }}>
+          © Cristian Escobar / Unsplash
+        </div>
         <div className="relative z-10 p-5 pt-8 flex flex-col justify-end" style={{ minHeight: 260 }}>
           <div style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--teal-light)', letterSpacing: '0.2em' }} className="text-[0.65rem] font-bold uppercase mb-2">
             {lang === 'es' ? 'Recomendación del Día' : "Today's Top Pick"}
@@ -86,8 +97,8 @@ export default function Home() {
             <Link key={b.slug} href={`/playas/${b.slug}`}
               className="block overflow-hidden group"
               style={{ borderRight: i % 2 === 0 ? '1px solid var(--rule)' : 'none', borderBottom: i < 2 ? '1px solid var(--rule)' : 'none' }}>
-              <div className={`h-20 relative bg-gradient-to-br ${b.gradient} flex items-center justify-center`}>
-                <span className="text-[3.5rem] opacity-20 group-hover:scale-105 transition-transform">{b.emoji}</span>
+              <div className={`h-20 relative overflow-hidden bg-gradient-to-br ${b.gradient}`}>
+                <img src={`/images/beaches/${b.slug}.jpg`} alt={lang==='es'?b.nameEs:b.nameEn} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.45) 100%)' }} />
                 <span className="absolute bottom-2 left-2 z-10 rounded-sm text-white"
                   style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.56rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '3px 7px', background: st.color }}>
@@ -124,8 +135,14 @@ export default function Home() {
         {attractions.map((a, i) => (
           <div key={a.slug} className="flex-shrink-0 min-w-[140px] cursor-pointer group"
             style={{ borderRight: i < attractions.length - 1 ? '1px solid var(--rule)' : 'none' }}>
-            <div className={`h-[90px] relative bg-gradient-to-br ${a.gradient} flex items-center justify-center overflow-hidden`}>
-              <span className="text-[3rem] opacity-25 group-hover:scale-105 transition-transform">{a.emoji}</span>
+            <div className={`h-[90px] relative overflow-hidden`} style={{background:`linear-gradient(135deg,${a.gradient.match(/from-\[([^\]]+)\]/)?.[1]??'#0d2d3f'},${a.gradient.match(/to-\[([^\]]+)\]/)?.[1]??'#1a7a6e'})`}}>
+              <img
+                src={`/images/attractions/${a.slug}.jpg`}
+                alt={lang==='es'?a.nameEs:a.nameEn}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}
+              />
+              <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.4) 100%)'}}/>
               <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.4) 100%)' }} />
             </div>
             <div className="p-2.5" style={{ background: 'var(--warm-white)' }}>
