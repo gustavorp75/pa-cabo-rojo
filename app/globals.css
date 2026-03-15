@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0f1a14;
+  --ocean: #0d2d3f;
+  --teal: #1a7a6e;
+  --teal-light: #2ba99a;
+  --coral: #e05a3a;
+  --gold: #c9943a;
+  --sand: #f0e8d6;
+  --cream: #faf7f2;
+  --warm-white: #fefcf8;
+  --muted: #7a7060;
+  --rule: #d4c9b0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.35;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes ticker {
+  0%   { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+.ticker-scroll { animation: ticker 30s linear infinite; }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.animate-fadeIn { animation: fadeIn 0.4s ease both; }
+.animate-fadeUp { animation: fadeUp 0.5s ease both; }
