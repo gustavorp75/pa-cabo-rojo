@@ -20,7 +20,7 @@ export default function Home() {
       <div className="relative overflow-hidden" style={{ minHeight: 260, background: 'linear-gradient(160deg,#0a3d52,#1a9b8a)', borderBottom: '3px solid var(--ink)' }}>
         {/* hero photo */}
         <img
-          src="/images/hero/hero-main2.jpg"
+          src="/images/hero/hero-main2.webp"
           alt="Boquerón beach aerial view"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%' }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
@@ -98,7 +98,7 @@ export default function Home() {
               className="block overflow-hidden group"
               style={{ borderRight: i % 2 === 0 ? '1px solid var(--rule)' : 'none', borderBottom: i < 2 ? '1px solid var(--rule)' : 'none' }}>
               <div className={`h-20 relative overflow-hidden bg-gradient-to-br ${b.gradient}`}>
-                <img src={`/images/beaches/${b.slug}.jpg`} alt={lang==='es'?b.nameEs:b.nameEn} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <img src={`/images/beaches/${b.slug}.webp`} alt={lang==='es'?b.nameEs:b.nameEn} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.45) 100%)' }} />
                 <span className="absolute bottom-2 left-2 z-10 rounded-sm text-white"
                   style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.56rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '3px 7px', background: st.color }}>
@@ -137,7 +137,7 @@ export default function Home() {
             style={{ borderRight: i < attractions.length - 1 ? '1px solid var(--rule)' : 'none' }}>
             <div className={`h-[90px] relative overflow-hidden`} style={{background:`linear-gradient(135deg,${a.gradient.match(/from-\[([^\]]+)\]/)?.[1]??'#0d2d3f'},${a.gradient.match(/to-\[([^\]]+)\]/)?.[1]??'#1a7a6e'})`}}>
               <img
-                src={`/images/attractions/${a.slug}.jpg`}
+                src={`/images/attractions/${a.slug}.webp`}
                 alt={lang==='es'?a.nameEs:a.nameEn}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}

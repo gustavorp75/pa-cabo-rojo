@@ -47,7 +47,7 @@ export default function BeachDetailPage({ params }: { params: Promise<{ slug: st
       <div className="relative overflow-hidden" style={{ minHeight: 260, background: `linear-gradient(160deg, ${gradStart}, ${gradEnd})`, borderBottom: '3px solid var(--ink)' }}>
         {/* real photo with gradient fallback */}
         <img
-          src={`/images/beaches/${beach.slug}.jpg`}
+          src={`/images/beaches/${beach.slug}.webp`}
           alt={name}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 60%' }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}

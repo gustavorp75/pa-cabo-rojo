@@ -27,7 +27,7 @@ export default function PlayasPage() {
               className="border-r border-b border-[var(--rule)] [&:nth-child(2n)]:border-r-0 [&:nth-last-child(-n+2)]:border-b-0 overflow-hidden group">
               <div className={`h-[110px] relative bg-gradient-to-br ${b.gradient} flex items-center justify-center overflow-hidden`}>
                 <img
-                  src={`/images/beaches/${b.slug}.jpg`}
+                  src={`/images/beaches/${b.slug}.webp`}
                   alt={lang === 'es' ? b.nameEs : b.nameEn}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}

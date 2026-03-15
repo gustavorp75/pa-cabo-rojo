@@ -167,7 +167,7 @@ export default function FoodPage() {
                   {/* emoji */}
                   <div style={{ width: 48, height: 48, background: 'var(--warm-white)', border: '1px solid var(--rule)', borderRadius: 4, overflow: 'hidden', flexShrink: 0, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
                     <img
-                      src={`/images/food/${r.id}.jpg`}
+                      src={`/images/food/${r.id}.webp`}
                       alt={r.name}
                       style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
