@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 72">
+  <ellipse cx="30" cy="68" rx="10" ry="4" fill="rgba(0,0,0,0.2)"/>
+  <path d="M30 4 C14 4 4 16 4 30 C4 48 30 68 30 68 C30 68 56 48 56 30 C56 16 46 4 30 4 Z" fill="#0a1a52" stroke="#fefcf8" stroke-width="2"/>
+  <circle cx="30" cy="28" r="20" fill="#1a3a7a" stroke="#2ba99a" stroke-width="2"/>
+  <!-- water -->
+  <ellipse cx="30" cy="34" rx="14" ry="8" fill="#2ba99a"/>
+  <!-- sand -->
+  <ellipse cx="30" cy="42" rx="14" ry="5" fill="#e8c97a"/>
+  <!-- umbrella pole -->
+  <rect x="29.5" y="12" width="2" height="20" fill="#fefcf8"/>
+  <!-- umbrella top -->
+  <path d="M18,18 Q30,8 42,18 Z" fill="#e05a3a"/>
+  <path d="M18,18 Q24,12 30,18 Z" fill="#c9943a"/>
+  <!-- waves -->
+  <path d="M18,28 Q22,25 26,28 Q30,25 34,28 Q38,25 42,28" fill="none" stroke="#fefcf8" stroke-width="1.5" stroke-opacity="0.6"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 72">
+  <ellipse cx="30" cy="68" rx="10" ry="4" fill="rgba(0,0,0,0.2)"/>
+  <path d="M30 4 C14 4 4 16 4 30 C4 48 30 68 30 68 C30 68 56 48 56 30 C56 16 46 4 30 4 Z" fill="#c9943a" stroke="#fefcf8" stroke-width="2"/>
+  <circle cx="30" cy="28" r="20" fill="#d4a843" stroke="#e05a3a" stroke-width="2"/>
+  <!-- pink water -->
+  <ellipse cx="30" cy="34" rx="14" ry="9" fill="#e8a0b0"/>
+  <ellipse cx="24" cy="36" rx="5" ry="2.5" fill="#f5c0cc" opacity="0.7"/>
+  <ellipse cx="34" cy="32" rx="4" ry="2" fill="#f5c0cc" opacity="0.7"/>
+  <!-- mountains -->
+  <path d="M12,26 L20,14 L28,22 L36,12 L48,26 Z" fill="#1a7a6e" opacity="0.8"/>
+  <!-- flamingo -->
+  <circle cx="40" cy="20" r="3" fill="#e05a3a"/>
+  <line x1="40" y1="23" x2="40" y2="30" stroke="#e05a3a" stroke-width="1.5"/>
+  <line x1="40" y1="30" x2="37" y2="34" stroke="#e05a3a" stroke-width="1.5"/>
+  <line x1="40" y1="30" x2="43" y2="34" stroke="#e05a3a" stroke-width="1.5"/>
+</svg>

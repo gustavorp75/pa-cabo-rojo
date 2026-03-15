@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 72">
+  <ellipse cx="30" cy="68" rx="10" ry="4" fill="rgba(0,0,0,0.2)"/>
+  <path d="M30 4 C14 4 4 16 4 30 C4 48 30 68 30 68 C30 68 56 48 56 30 C56 16 46 4 30 4 Z" fill="#1a3d1a" stroke="#fefcf8" stroke-width="2"/>
+  <circle cx="30" cy="28" r="20" fill="#2d5a1a" stroke="#2ba99a" stroke-width="2"/>
+  <!-- trail -->
+  <path d="M12,44 Q20,36 28,30 Q36,26 46,22" fill="none" stroke="#c9943a" stroke-width="2.5" stroke-dasharray="3,2"/>
+  <!-- trees -->
+  <rect x="14" y="24" width="3" height="14" fill="#8B5E3C"/>
+  <ellipse cx="16" cy="22" rx="7" ry="6" fill="#1a7a3a"/>
+  <rect x="37" y="20" width="3" height="16" fill="#8B5E3C"/>
+  <ellipse cx="38" cy="18" rx="6" ry="5" fill="#2d9b4a"/>
+  <!-- bird -->
+  <path x="26" y="12" d="M26,12 Q28,9 30,12" fill="none" stroke="#fefcf8" stroke-width="1.5"/>
+</svg>

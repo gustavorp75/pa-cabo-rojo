@@ -654,6 +654,7 @@ export interface MapPin {
   lng: number
   emoji: string
   color: string
+  svgPin: string
   status?: 'open' | 'closing' | 'closed' | 'great' | 'good' | 'busy'
   mapLink: string
 }
@@ -662,6 +663,7 @@ export const mapPins: MapPin[] = [
   // ── BEACHES ──
   {
     id: 'playa-sucia',
+    svgPin: '/pins/beach-sucia.svg',
     type: 'beach',
     nameEs: 'Playa Sucia',
     nameEn: 'Playa Sucia',
@@ -674,6 +676,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'playa-buye',
+    svgPin: '/pins/beach-buye.svg',
     type: 'beach',
     nameEs: 'Playa Buyé',
     nameEn: 'Playa Buyé',
@@ -686,6 +689,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'combate',
+    svgPin: '/pins/beach-combate.svg',
     type: 'beach',
     nameEs: 'Playa Combate',
     nameEn: 'Combate Beach',
@@ -698,6 +702,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'balneario',
+    svgPin: '/pins/beach-balneario.svg',
     type: 'beach',
     nameEs: 'Balneario Boquerón',
     nameEn: 'Balneario Boquerón',
@@ -711,6 +716,7 @@ export const mapPins: MapPin[] = [
   // ── RESTAURANTS & BARS ──
   {
     id: 'map-el-bohio',
+    svgPin: '/pins/food-mariscos.svg',
     type: 'restaurant',
     nameEs: 'El Bohío',
     nameEn: 'El Bohío',
@@ -723,6 +729,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-shamar',
+    svgPin: '/pins/food-bar.svg',
     type: 'bar',
     nameEs: 'Shamar Bar & Grill',
     nameEn: 'Shamar Bar & Grill',
@@ -735,6 +742,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-galloways',
+    svgPin: '/pins/food-bar.svg',
     type: 'bar',
     nameEs: "Galloway's",
     nameEn: "Galloway's",
@@ -747,6 +755,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-pescadores',
+    svgPin: '/pins/food-mariscos.svg',
     type: 'restaurant',
     nameEs: 'Pescadores',
     nameEn: 'Pescadores',
@@ -759,6 +768,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-kioscos',
+    svgPin: '/pins/food-kiosko.svg',
     type: 'restaurant',
     nameEs: 'Kioscos Combate',
     nameEn: 'Combate Kiosks',
@@ -772,6 +782,7 @@ export const mapPins: MapPin[] = [
   // ── ATTRACTIONS ──
   {
     id: 'map-faro',
+    svgPin: '/pins/attraction-faro.svg',
     type: 'attraction',
     nameEs: 'Faro Los Morrillos',
     nameEn: 'Los Morrillos Lighthouse',
@@ -783,6 +794,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-salinas',
+    svgPin: '/pins/attraction-salinas.svg',
     type: 'attraction',
     nameEs: 'Las Salinas',
     nameEn: 'Salt Flats',
@@ -794,6 +806,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-bosque',
+    svgPin: '/pins/attraction-bosque.svg',
     type: 'attraction',
     nameEs: 'Bosque Seco',
     nameEn: 'Dry Forest Reserve',
@@ -805,6 +818,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-pueblo',
+    svgPin: '/pins/attraction-pueblo.svg',
     type: 'attraction',
     nameEs: 'Pueblo de Boquerón',
     nameEn: 'Boquerón Village',
@@ -817,6 +831,7 @@ export const mapPins: MapPin[] = [
   // ── TONIGHT EVENTS ──
   {
     id: 'map-sunset-event',
+    svgPin: '/pins/event-sunset.svg',
     type: 'event',
     nameEs: 'Atardecer — 6:00pm',
     nameEn: 'Sunset — 6:00pm',
@@ -828,6 +843,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-salsa-event',
+    svgPin: '/pins/event-salsa.svg',
     type: 'event',
     nameEs: 'Salsa en Vivo — 7:30pm',
     nameEn: 'Live Salsa — 7:30pm',

@@ -75,7 +75,7 @@ export default function MapPage() {
       map.on('zoom', () => {
         const scale = Math.max(0.45, Math.min(1.1, (map.getZoom() - 8) / 6))
         markersRef.current.forEach((marker: any) => {
-          const wrap = marker.getElement().querySelector('.pcr-scale-wrap') as HTMLElement
+          const wrap = marker.getElement()?.querySelector('.pcr-scale-wrap') as HTMLElement
           if (wrap) wrap.style.transform = `scale(${scale})`
         })
       })
@@ -107,31 +107,26 @@ export default function MapPage() {
 
         el.innerHTML = `
           <div class="pcr-scale-wrap" style="transform:scale(${getScale(currentZoom)});transform-origin:bottom center;transition:transform .15s ease;will-change:transform">
-            <div style="position:relative;width:36px;height:46px">
-              <div class="pcr-pin-body" style="
-                position:absolute;top:0;left:0;
-                width:36px;height:36px;
-                background:${pin.color};
-                border-radius:50% 50% 50% 0;
-                transform:rotate(-45deg);
-                display:flex;align-items:center;justify-content:center;
-                box-shadow:0 4px 14px rgba(0,0,0,0.5);
-                border:2px solid rgba(255,255,255,0.2);
-                transition:transform .15s ease;
-              ">
-                <span style="transform:rotate(45deg);font-size:15px;line-height:1;display:block;margin-top:1px">${pin.emoji}</span>
-              </div>
+            <div style="position:relative;width:48px;height:60px">
+              <img
+                src="${pin.svgPin}"
+                width="48"
+                height="60"
+                style="display:block;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.4));transition:filter .15s ease;"
+                class="pcr-pin-img"
+                alt="${pin.nameEn}"
+              />
             </div>
           </div>
         `
 
         el.addEventListener('mouseenter', () => {
-          const body = el.querySelector('.pcr-pin-body') as HTMLElement
-          if (body) body.style.transform = 'rotate(-45deg) scale(1.2)'
+          const img = el.querySelector('.pcr-pin-img') as HTMLElement
+          if (img) img.style.filter = 'drop-shadow(0 6px 10px rgba(0,0,0,0.6)) brightness(1.1)'
         })
         el.addEventListener('mouseleave', () => {
-          const body = el.querySelector('.pcr-pin-body') as HTMLElement
-          if (body) body.style.transform = 'rotate(-45deg) scale(1)'
+          const img = el.querySelector('.pcr-pin-img') as HTMLElement
+          if (img) img.style.filter = 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))'
         })
         el.addEventListener('click', () => {
           setSelectedPin(pin)

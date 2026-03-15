@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 72">
+  <ellipse cx="30" cy="68" rx="10" ry="4" fill="rgba(0,0,0,0.2)"/>
+  <path d="M30 4 C14 4 4 16 4 30 C4 48 30 68 30 68 C30 68 56 48 56 30 C56 16 46 4 30 4 Z" fill="#0d2d3f" stroke="#fefcf8" stroke-width="2"/>
+  <circle cx="30" cy="28" r="20" fill="#0f3550" stroke="#c9943a" stroke-width="2"/>
+  <!-- cliff -->
+  <path d="M12,44 L20,32 L40,32 L48,44 Z" fill="#7a5a3a"/>
+  <!-- lighthouse tower -->
+  <rect x="25" y="16" width="10" height="18" fill="#fefcf8" rx="1"/>
+  <rect x="25" y="10" width="10" height="8" fill="#e05a3a" rx="1"/>
+  <rect x="23" y="8" width="14" height="4" fill="#0d2d3f" rx="1"/>
+  <polygon points="30,2 23,8 37,8" fill="#c9943a"/>
+  <!-- light -->
+  <circle cx="30" cy="14" r="2.5" fill="#c9943a"/>
+  <line x1="30" y1="14" x2="46" y2="26" stroke="#c9943a" stroke-width="1.5" opacity="0.7"/>
+</svg>

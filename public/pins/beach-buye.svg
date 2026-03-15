@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 72">
+  <ellipse cx="30" cy="68" rx="10" ry="4" fill="rgba(0,0,0,0.2)"/>
+  <path d="M30 4 C14 4 4 16 4 30 C4 48 30 68 30 68 C30 68 56 48 56 30 C56 16 46 4 30 4 Z" fill="#0a3d1a" stroke="#fefcf8" stroke-width="2"/>
+  <circle cx="30" cy="28" r="20" fill="#1a5c2a" stroke="#2ba99a" stroke-width="2"/>
+  <!-- water -->
+  <ellipse cx="30" cy="36" rx="14" ry="8" fill="#2ba99a"/>
+  <!-- sand -->
+  <ellipse cx="30" cy="43" rx="14" ry="5" fill="#e8c97a"/>
+  <!-- palm trunk -->
+  <rect x="29" y="14" width="3" height="18" fill="#8B5E3C" rx="1"/>
+  <!-- palm leaves -->
+  <ellipse cx="23" cy="14" rx="8" ry="5" fill="#2d7a4a"/>
+  <ellipse cx="34" cy="12" rx="7" ry="4" fill="#1a9b5a"/>
+  <ellipse cx="28" cy="10" rx="6" ry="4" fill="#2d7a4a"/>
+  <!-- coconut -->
+  <circle cx="36" cy="18" r="2.5" fill="#8B5E3C"/>
+</svg>
