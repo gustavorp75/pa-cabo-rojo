@@ -3,12 +3,14 @@ import Link from 'next/link'
 import { useLang } from '@/lib/LangContext'
 import { beaches, attractions, events, restaurants, plans, ui, statusLabel } from '@/lib/data'
 import TopBar from '@/components/TopBar'
+import { useConditions } from '@/lib/useConditions'
 import Nameplate from '@/components/Nameplate'
 import Ticker from '@/components/Ticker'
 import BottomNav from '@/components/BottomNav'
 
 export default function Home() {
   const { lang, t } = useLang()
+  const { data: wx } = useConditions()
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
@@ -33,7 +35,7 @@ export default function Home() {
         </div>
         <div className="relative z-10 p-5 pt-8 flex flex-col justify-end" style={{ minHeight: 260 }}>
           <div style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--teal-light)', letterSpacing: '0.2em' }} className="text-[0.65rem] font-bold uppercase mb-2">
-            {lang === 'es' ? 'Recomendación del Día' : "Today's Top Pick"}
+            {wx ? `${wx.weather.emoji} ${lang === 'es' ? wx.weather.descEs : wx.weather.descEn} · ${wx.temp.f}°F` : (lang === 'es' ? 'Recomendación del Día' : "Today's Top Pick")}
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville',serif", color: '#fff', fontSize: 'clamp(1.8rem,7vw,2.5rem)', lineHeight: 1.08, textShadow: '0 2px 12px rgba(0,0,0,0.4)' }} className="font-bold mb-2">
             {lang === 'es'
@@ -51,10 +53,26 @@ export default function Home() {
       {/* ── CONDITIONS ── */}
       <div className="grid grid-cols-4" style={{ borderBottom: '2px solid var(--ink)' }}>
         {[
-          { es: 'Temp',   en: 'Temp',   val: '84°F' },
-          { es: 'Viento', en: 'Wind',   val: '12mph' },
-          { es: 'Mar',    en: 'Sea',    val: lang === 'es' ? 'Calmo' : 'Calm' },
-          { es: 'Ocaso',  en: 'Sunset', val: '6:48' },
+          {
+            es: 'Temp', en: 'Temp',
+            val: wx ? `${wx.temp.f}°F` : '—',
+            note: wx ? (lang === 'es' ? `Se siente ${wx.feelsLike.f}°` : `Feels ${wx.feelsLike.f}°`) : '',
+          },
+          {
+            es: 'Viento', en: 'Wind',
+            val: wx ? `${wx.wind.mph}mph` : '—',
+            note: wx ? `${wx.wind.compass} · ${lang === 'es' ? wx.wind.conditionEs : wx.wind.conditionEn}` : '',
+          },
+          {
+            es: 'Mar', en: 'Sea',
+            val: wx ? (lang === 'es' ? wx.waves.conditionEs : wx.waves.conditionEn) : '—',
+            note: wx ? `${wx.waves.ft}ft` : '',
+          },
+          {
+            es: 'Ocaso', en: 'Sunset',
+            val: wx ? wx.sunset.replace(' PM','').replace(' AM','') : '—',
+            note: wx ? wx.sunset.includes('PM') ? 'PM' : 'AM' : '',
+          },
         ].map((c, i) => (
           <div key={i} className="py-3 px-2 text-center" style={{ borderRight: i < 3 ? '1px solid var(--rule)' : 'none' }}>
             <div style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--muted)', letterSpacing: '0.12em' }} className="text-[0.52rem] font-bold uppercase mb-1">
@@ -63,6 +81,7 @@ export default function Home() {
             <div style={{ fontFamily: "'Bebas Neue',sans-serif", color: 'var(--ink)', fontSize: '1.3rem', letterSpacing: '0.03em', lineHeight: 1 }}>
               {c.val}
             </div>
+            {c.note && <div style={{ fontSize: '0.55rem', color: 'var(--teal)', marginTop: 1 }}>{c.note}</div>}
           </div>
         ))}
       </div>
