@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { beaches, ui, statusLabel } from '@/lib/data'
 import { useLang } from '@/lib/LangContext'
+import { useConditions } from '@/lib/useConditions'
+import { getBeachConditions } from '@/lib/beachConditions'
 import TopBar from '@/components/TopBar'
 import BottomNav from '@/components/BottomNav'
 
@@ -13,6 +15,9 @@ export default function BeachDetailPage({ params }: { params: Promise<{ slug: st
   if (!beach) notFound()
 
   const { lang, t } = useLang()
+  const { data: wx } = useConditions()
+  const beachConds = getBeachConditions(wx ?? null)
+  const liveCond = beachConds[beach.slug]
   const st = statusLabel[beach.status]
 
   const gradStart = beach.gradient.match(/from-\[([^\]]+)\]/)?.[1] ?? '#0a3d52'

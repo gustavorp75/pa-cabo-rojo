@@ -1,6 +1,8 @@
 'use client'
 
 import { useLang } from '@/lib/LangContext'
+import { useConditions } from '@/lib/useConditions'
+import { getBeachConditions } from '@/lib/beachConditions'
 import { beaches, ui, statusLabel } from '@/lib/data'
 import TopBar from '@/components/TopBar'
 import Nameplate from '@/components/Nameplate'
@@ -9,6 +11,8 @@ import Link from 'next/link'
 
 export default function PlayasPage() {
   const { lang, t } = useLang()
+  const { data: wx } = useConditions()
+  const beachConds = getBeachConditions(wx ?? null)
 
   return (
     <>
@@ -21,7 +25,10 @@ export default function PlayasPage() {
 
       <div className="grid grid-cols-2 border-b-[2px] border-[var(--ink)]">
         {beaches.map((b) => {
-          const st = statusLabel[b.status]
+          const cond = beachConds[b.slug]
+          const st = cond
+            ? { es: cond.labelEs, en: cond.labelEn, color: cond.color }
+            : { es: '● Excelente', en: '● Great', color: '#16a34a' }
           return (
             <Link key={b.slug} href={`/playas/${b.slug}`}
               className="border-r border-b border-[var(--rule)] [&:nth-child(2n)]:border-r-0 [&:nth-last-child(-n+2)]:border-b-0 overflow-hidden group">

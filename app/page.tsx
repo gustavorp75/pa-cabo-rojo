@@ -4,6 +4,7 @@ import { useLang } from '@/lib/LangContext'
 import { beaches, attractions, events, restaurants, plans, ui, statusLabel } from '@/lib/data'
 import TopBar from '@/components/TopBar'
 import { useConditions } from '@/lib/useConditions'
+import { getBeachConditions } from '@/lib/beachConditions'
 import Nameplate from '@/components/Nameplate'
 import Ticker from '@/components/Ticker'
 import BottomNav from '@/components/BottomNav'
@@ -11,6 +12,7 @@ import BottomNav from '@/components/BottomNav'
 export default function Home() {
   const { lang, t } = useLang()
   const { data: wx } = useConditions()
+  const beachConds = getBeachConditions(wx ?? null)
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
@@ -111,7 +113,10 @@ export default function Home() {
 
       <div className="grid grid-cols-2" style={{ borderBottom: '2px solid var(--ink)' }}>
         {beaches.map((b, i) => {
-          const st = statusLabel[b.status]
+          const cond = beachConds[b.slug]
+          const st = cond
+            ? { es: cond.labelEs, en: cond.labelEn, color: cond.color }
+            : { es: '● Excelente', en: '● Great', color: '#16a34a' }
           return (
             <Link key={b.slug} href={`/playas/${b.slug}`}
               className="block overflow-hidden group"
