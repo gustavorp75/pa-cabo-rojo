@@ -5,6 +5,7 @@ import { beaches, attractions, events, restaurants, plans, ui, statusLabel } fro
 import TopBar from '@/components/TopBar'
 import { useConditions } from '@/lib/useConditions'
 import { getBeachConditions } from '@/lib/beachConditions'
+import CrowdZones from '@/components/CrowdZones'
 import Nameplate from '@/components/Nameplate'
 import Ticker from '@/components/Ticker'
 import BottomNav from '@/components/BottomNav'
@@ -87,6 +88,9 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      {/* ── CROWD ZONES ── */}
+      <CrowdZones />
 
       {/* ── MODE TABS ── */}
       <div className="overflow-x-auto" style={{ borderBottom: '2px solid var(--ink)', background: 'var(--warm-white)', scrollbarWidth: 'none' }}>

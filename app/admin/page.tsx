@@ -305,6 +305,44 @@ export default function AdminPage() {
       {/* ── TICKER ── */}
       {tab === 'ticker' && (
         <div style={s.section}>
+          <h2 style={s.h2}>Crowd Zone Event Impact</h2>
+          <p style={{ fontSize: '0.78rem', color: '#7a9a7a', marginBottom: 16, lineHeight: 1.6 }}>
+            Set event impact per zone — this boosts the crowd score when there's a festival, live music night, holiday weekend, or special event happening.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 24 }}>
+            {['boqueron-poblado','balneario','playa-buye','combate','playa-sucia','faro-morrillos','salinas'].map(zoneId => {
+              const key = `event_impact_${zoneId}`
+              const labels: Record<string, string> = {
+                'boqueron-poblado': 'Pueblo Boquerón',
+                'balneario': 'Balneario',
+                'playa-buye': 'Playa Buyé',
+                'combate': 'Combate',
+                'playa-sucia': 'Playa Sucia',
+                'faro-morrillos': 'Los Morrillos',
+                'salinas': 'Las Salinas',
+              }
+              return (
+                <div key={zoneId} style={{ background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: '10px 12px' }}>
+                  <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 6 }}>{labels[zoneId]}</label>
+                  <select style={{ width: '100%', padding: '6px 10px', background: '#1a2a1a', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.82rem', outline: 'none' }}
+                    value={settings[key] || 'none'}
+                    onChange={async e => {
+                      const newSettings = { ...settings, [key]: e.target.value }
+                      setSettings(newSettings)
+                      await fetch('/api/admin/settings', { method: 'POST', headers: headers(), body: JSON.stringify({ [key]: e.target.value }) })
+                      showSaved('Saved ✓')
+                    }}>
+                    <option value="none">None</option>
+                    <option value="light">Light — small event</option>
+                    <option value="medium">Medium — live music / weekly event</option>
+                    <option value="strong">Strong — festival / holiday weekend</option>
+                    <option value="major">Major — patronales / big event</option>
+                  </select>
+                </div>
+              )
+            })}
+          </div>
+
           <h2 style={s.h2}>Weather Ticker Custom Message</h2>
           <p style={{ fontSize: '0.78rem', color: '#7a9a7a', marginBottom: 16, lineHeight: 1.6 }}>
             Add a custom message to the scrolling ticker. Leave blank to show only live weather data. Great for special announcements, road closures, or event promotions.
