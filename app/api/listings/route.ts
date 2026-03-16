@@ -4,6 +4,14 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+export async function GET(req: NextRequest) {
+  const auth = req.headers.get('x-admin-password')
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const db = getDb()
+  const rows = await db`SELECT * FROM business_listings ORDER BY created_at DESC`
+  return NextResponse.json(rows)
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
