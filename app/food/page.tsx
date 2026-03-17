@@ -37,16 +37,45 @@ export default function FoodPage() {
   const { lang } = useLang()
   const [activeCategory, setActiveCategory] = useState<FoodCategory | 'all'>('all')
   const [activeStatus, setActiveStatus] = useState<'all' | 'open'>('open')
+  const [liveData, setLiveData] = useState<Record<string, any>>({})
+  const [statusLoaded, setStatusLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/restaurants')
+      .then(r => r.json())
+      .then((data: any[]) => {
+        const map: Record<string, any> = {}
+        data.forEach(r => { map[r.id] = r })
+        setLiveData(map)
+        setStatusLoaded(true)
+      })
+      .catch(() => setStatusLoaded(true))
+  }, [])
+
+  // Merge live status into static restaurant data
+  const restaurants = useMemo(() =>
+    fullRestaurants.map(r => {
+      const live = liveData[r.id]
+      if (!live) return r
+      return {
+        ...r,
+        status: live.status ?? r.status,
+        hoursDisplay: live.hoursDisplay ?? '',
+        closeTime: live.closeTime ?? null,
+        special_offer: live.special_offer ?? (r as any).specialOffer ?? null,
+      }
+    }),
+  [liveData])
 
   const filtered = useMemo(() => {
-    return fullRestaurants.filter(r => {
+    return restaurants.filter(r => {
       const catMatch = activeCategory === 'all' || r.category === activeCategory
-      const statusMatch = activeStatus === 'all' || r.status !== 'closed'
+      const statusMatch = activeStatus === 'all' || r.status === 'open' || r.status === 'closing-soon'
       return catMatch && statusMatch
     })
-  }, [activeCategory, activeStatus])
+  }, [activeCategory, activeStatus, restaurants])
 
-  const openCount = fullRestaurants.filter(r => r.status !== 'closed').length
+  const openCount = restaurants.filter(r => r.status === 'open' || r.status === 'closing-soon').length
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
@@ -147,8 +176,15 @@ export default function FoodPage() {
         ) : (
           filtered.map((r, i) => {
             const cat = foodCategoryMeta[r.category]
-            const isOpen = r.status !== 'closed'
-            const statusColor = r.status === 'open' ? '#16a34a' : r.status === 'closing' ? 'var(--coral)' : 'var(--muted)'
+            const statusColor = r.status === 'open' ? '#16a34a' : r.status === 'closing-soon' ? '#c9943a' : r.status === 'closed' ? '#e05a3a' : 'var(--muted)'
+            const statusText = r.status === 'open'
+              ? (lang === 'es' ? 'Abierto' : 'Open')
+              : r.status === 'closing-soon'
+              ? (lang === 'es' ? `Cierra ${(r as any).closeTime ?? 'pronto'}` : `Closes ${(r as any).closeTime ?? 'soon'}`)
+              : r.status === 'closed'
+              ? (lang === 'es' ? 'Cerrado' : 'Closed')
+              : ''
+            const hoursDisplay = (r as any).hoursDisplay ?? ''
 
             return (
               <div key={r.id}
@@ -210,13 +246,17 @@ export default function FoodPage() {
 
                   {/* right — status + stars + hours */}
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: statusColor, marginBottom: 3 }}>
-                      {lang === 'es' ? r.statusEs : r.statusEn}
-                    </div>
+                    {statusText && (
+                      <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: statusColor, marginBottom: 3 }}>
+                        ● {statusText}
+                      </div>
+                    )}
+                    {hoursDisplay && (
+                      <div style={{ fontSize: '0.58rem', color: 'var(--muted)', marginBottom: 3 }}>
+                        {hoursDisplay}
+                      </div>
+                    )}
                     <StarRating stars={r.stars} />
-                    <div style={{ fontSize: '0.6rem', color: 'var(--muted)', marginTop: 3, lineHeight: 1.4 }}>
-                      {lang === 'es' ? r.hoursEs : r.hoursEn}
-                    </div>
                   </div>
                 </div>
 
