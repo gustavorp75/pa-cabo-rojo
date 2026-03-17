@@ -64,7 +64,10 @@ export default function TonightPage() {
           <div style={{ padding: '14px 12px', borderLeft: '1px solid rgba(255,255,255,0.07)' }}>
             {/* category tag */}
             <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-[0.7rem]">{cat.icon}</span>
+              {(cat as any).img
+                ? <img src={(cat as any).img} alt="" style={{ width: 18, height: 18, objectFit: 'contain', display: 'inline-block' }} onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
+                : <span className="text-[0.7rem]">{cat.icon}</span>
+              }
               <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: cat.color }}>
                 {lang === 'es' ? cat.es : cat.en}
               </span>
@@ -173,7 +176,10 @@ export default function TonightPage() {
                   whiteSpace: 'nowrap',
                   display: 'flex', alignItems: 'center', gap: 6,
                 }}>
-                <span>{cat.icon}</span>
+                {(cat as any).img
+                  ? <img src={(cat as any).img} alt={lang === 'es' ? cat.es : cat.en} style={{ width: 24, height: 24, objectFit: 'contain' }} onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
+                  : <span>{cat.icon}</span>
+                }
                 <span>{lang === 'es' ? cat.es : cat.en}</span>
               </button>
             )

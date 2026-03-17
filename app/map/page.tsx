@@ -166,7 +166,15 @@ export default function MapPage() {
                   display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap',
                   transition: 'all 0.15s',
                 }}>
-                <span style={{ opacity: active ? 1 : 0.4 }}>{meta.emoji}</span>
+                <img src={{
+                  beach: '/images/icons/PinPCR_Red_BeachShell.webp',
+                  restaurant: '/images/icons/Food2_PCR.webp',
+                  bar: '/images/icons/Bar4_PCR.webp',
+                  attraction: '/images/icons/Faro_PCR.webp',
+                  event: '/images/icons/Event1_PCR.webp',
+                }[type]} alt={lang === 'es' ? meta.es : meta.en}
+                style={{ width: 20, height: 20, objectFit: 'contain', opacity: active ? 1 : 0.4 }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
                 <span>{lang === 'es' ? meta.es : meta.en}</span>
                 <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: '0.85rem', color: active ? meta.color : 'rgba(255,255,255,0.2)', marginLeft: 2 }}>
                   {count}

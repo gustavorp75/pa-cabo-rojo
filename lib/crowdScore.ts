@@ -10,19 +10,20 @@ export interface Zone {
   nameEn: string
   type: ZoneType
   emoji: string
+  img: string
   bestForEs: string
   bestForEn: string
   href: string
 }
 
 export const zones: Zone[] = [
-  { id: 'boqueron-poblado', nameEs: 'Pueblo de Boquerón', nameEn: 'Boquerón Village',  type: 'nightlife',   emoji: '🎶', bestForEs: 'Comida · Bares · Ambiente', bestForEn: 'Food · Bars · Atmosphere', href: '/food' },
-  { id: 'balneario',        nameEs: 'Balneario Boquerón', nameEn: 'Balneario Beach',   type: 'beach',       emoji: '🏖️', bestForEs: 'Playa animada · Acceso fácil', bestForEn: 'Lively beach · Easy access', href: '/playas/balneario' },
-  { id: 'playa-buye',       nameEs: 'Playa Buyé',         nameEn: 'Playa Buyé',        type: 'beach',       emoji: '🌊', bestForEs: 'Familia · Agua clara', bestForEn: 'Family · Clear water', href: '/playas/playa-buye' },
-  { id: 'combate',          nameEs: 'Playa Combate',      nameEn: 'Combate Beach',     type: 'beach',       emoji: '🌅', bestForEs: 'Atardecer · Kitesurf', bestForEn: 'Sunset · Kite surfing', href: '/playas/combate' },
-  { id: 'playa-sucia',      nameEs: 'Playa Sucia',        nameEn: 'Playa Sucia',       type: 'beach',       emoji: '🏛️', bestForEs: 'Buceo · Tranquilidad', bestForEn: 'Snorkeling · Solitude', href: '/playas/playa-sucia' },
-  { id: 'faro-morrillos',   nameEs: 'Faro Los Morrillos', nameEn: 'Los Morrillos',     type: 'attraction',  emoji: '🔦', bestForEs: 'Atardecer · Fotos', bestForEn: 'Sunset · Photos', href: '/map' },
-  { id: 'salinas',          nameEs: 'Las Salinas',        nameEn: 'Salt Flats',        type: 'attraction',  emoji: '🌸', bestForEs: 'Naturaleza · Flamencos', bestForEn: 'Nature · Flamingos', href: '/map' },
+  { id: 'boqueron-poblado', img: '/images/icons/PinPCR_Green_Music.webp', nameEs: 'Pueblo de Boquerón', nameEn: 'Boquerón Village',  type: 'nightlife',   emoji: '🎶', bestForEs: 'Comida · Bares · Ambiente', bestForEn: 'Food · Bars · Atmosphere', href: '/food' },
+  { id: 'balneario', img: '/images/icons/PinPCR_Red_BeachShell.webp',        nameEs: 'Balneario Boquerón', nameEn: 'Balneario Beach',   type: 'beach',       emoji: '🏖️', bestForEs: 'Playa animada · Acceso fácil', bestForEn: 'Lively beach · Easy access', href: '/playas/balneario' },
+  { id: 'playa-buye', img: '/images/icons/PinPCR_Red_BeachShell.webp',       nameEs: 'Playa Buyé',         nameEn: 'Playa Buyé',        type: 'beach',       emoji: '🌊', bestForEs: 'Familia · Agua clara', bestForEn: 'Family · Clear water', href: '/playas/playa-buye' },
+  { id: 'combate', img: '/images/icons/PinPCR_Red_Palma.webp',          nameEs: 'Playa Combate',      nameEn: 'Combate Beach',     type: 'beach',       emoji: '🌅', bestForEs: 'Atardecer · Kitesurf', bestForEn: 'Sunset · Kite surfing', href: '/playas/combate' },
+  { id: 'playa-sucia', img: '/images/icons/PinPCR_Red_Beach.webp',      nameEs: 'Playa Sucia',        nameEn: 'Playa Sucia',       type: 'beach',       emoji: '🏛️', bestForEs: 'Buceo · Tranquilidad', bestForEn: 'Snorkeling · Solitude', href: '/playas/playa-sucia' },
+  { id: 'faro-morrillos', img: '/images/icons/PinPCR_Red_Faro.webp',   nameEs: 'Faro Los Morrillos', nameEn: 'Los Morrillos',     type: 'attraction',  emoji: '🔦', bestForEs: 'Atardecer · Fotos', bestForEn: 'Sunset · Photos', href: '/map' },
+  { id: 'salinas', img: '/images/icons/PinPCR_Green_Flower.webp',          nameEs: 'Las Salinas',        nameEn: 'Salt Flats',        type: 'attraction',  emoji: '🌸', bestForEs: 'Naturaleza · Flamencos', bestForEn: 'Nature · Flamingos', href: '/map' },
 ]
 
 // ── BASELINE SCORES (day + hour) ─────────────────────────

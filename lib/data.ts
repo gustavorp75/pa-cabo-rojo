@@ -67,6 +67,7 @@ export interface Restaurant {
 
 export interface Plan {
   icon: string
+  img?: string
   nameEs: string
   nameEn: string
   descEs: string
@@ -239,10 +240,10 @@ export const restaurants: Restaurant[] = [
 
 // ── PLANS ────────────────────────────────────────────────
 export const plans: Plan[] = [
-  { icon: '👨‍👩‍👧', nameEs: 'Sábado Familiar', nameEn: 'Family Saturday', descEs: 'Buyé → Faro → cena temprano', descEn: 'Buyé → Lighthouse → early dinner', color: '#1a7a6e' },
-  { icon: '🌅', nameEs: 'Atardecer + Cena', nameEn: 'Sunset + Dinner', descEs: 'Los Morrillos 6pm → Shamar', descEn: 'Los Morrillos 6pm → Shamar', color: '#e05a3a' },
-  { icon: '🚗', nameEs: 'Plan de Lunes', nameEn: 'Monday Plan', descEs: 'Sin multitudes, los mejores sitios', descEn: 'Off-season picks, no crowds', color: '#c9943a' },
-  { icon: '💑', nameEs: 'Noche Romántica', nameEn: 'Date Night', descEs: 'Playa Sucia → salinas → tragos', descEn: 'Playa Sucia → salt flats → drinks', color: '#0d2d3f' },
+  { icon: '👨‍👩‍👧', img: '/images/icons/Family2_PCR.webp', nameEs: 'Sábado Familiar', nameEn: 'Family Saturday', descEs: 'Buyé → Faro → cena temprano', descEn: 'Buyé → Lighthouse → early dinner', color: '#1a7a6e' },
+  { icon: '🌅', img: '/images/icons/Faro_PCR.webp', nameEs: 'Atardecer + Cena', nameEn: 'Sunset + Dinner', descEs: 'Los Morrillos 6pm → Shamar', descEn: 'Los Morrillos 6pm → Shamar', color: '#e05a3a' },
+  { icon: '🚗', img: '/images/icons/Car5_PCR_Green.webp', nameEs: 'Plan de Lunes', nameEn: 'Monday Plan', descEs: 'Sin multitudes, los mejores sitios', descEn: 'Off-season picks, no crowds', color: '#c9943a' },
+  { icon: '💑', img: '/images/icons/PinPCR_Couple1.webp', nameEs: 'Noche Romántica', nameEn: 'Date Night', descEs: 'Playa Sucia → salinas → tragos', descEn: 'Playa Sucia → salt flats → drinks', color: '#0d2d3f' },
 ]
 
 // ── STATUS LABELS ─────────────────────────────────────────
@@ -430,13 +431,13 @@ export const fullEvents: FullEvent[] = [
   },
 ]
 
-export const categoryMeta: Record<EventCategory, { es: string; en: string; icon: string; color: string }> = {
-  music:     { es: 'Música',     en: 'Music',     icon: '🎶', color: '#7c3aed' },
-  food:      { es: 'Comida',     en: 'Food',      icon: '🍽️', color: '#c9943a' },
-  nature:    { es: 'Naturaleza', en: 'Nature',    icon: '🌿', color: '#16a34a' },
-  nightlife: { es: 'Nightlife',  en: 'Nightlife', icon: '🌙', color: '#0d2d3f' },
-  family:    { es: 'Familia',    en: 'Family',    icon: '👨‍👩‍👧', color: '#2ba99a' },
-  deal:      { es: 'Ofertas',    en: 'Deals',     icon: '🏷️', color: '#e05a3a' },
+export const categoryMeta: Record<EventCategory, { es: string; en: string; icon: string; img?: string; color: string }> = {
+  music:     { es: 'Música',     en: 'Music',     icon: '🎶', img: '/images/icons/Music3_PCR.webp', color: '#7c3aed' },
+  food:      { es: 'Comida',     en: 'Food',      icon: '🍽️', img: '/images/icons/Food2_PCR.webp', color: '#c9943a' },
+  nature:    { es: 'Naturaleza', en: 'Nature',    icon: '🌿', img: '/images/icons/Corals_PCR.webp', color: '#16a34a' },
+  nightlife: { es: 'Nightlife',  en: 'Nightlife', icon: '🌙', img: '/images/icons/Noche_PCR.webp', color: '#0d2d3f' },
+  family:    { es: 'Familia',    en: 'Family',    icon: '👨‍👩‍👧', img: '/images/icons/Family2_PCR.webp', color: '#2ba99a' },
+  deal:      { es: 'Ofertas',    en: 'Deals',     icon: '🏷️', img: '/images/icons/GoldBars_PCR.webp', color: '#e05a3a' },
 }
 
 
@@ -448,6 +449,7 @@ export interface FullRestaurant {
   id: string
   name: string
   emoji: string
+  img?: string
   category: FoodCategory
   price: PriceRange
   descEs: string
@@ -475,6 +477,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'el-bohio',
     name: 'El Bohío',
     emoji: '🦞',
+    img: '/images/icons/Mariscos1_PCR.webp',
     category: 'mariscos',
     price: '$$',
     taglineEs: 'El mejor mofongo de mariscos del área.',
@@ -497,6 +500,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'shamar',
     name: 'Shamar Bar & Grill',
     emoji: '🎶',
+    img: '/images/icons/Music3_PCR.webp',
     category: 'bar',
     price: '$',
     taglineEs: 'Salsa en vivo, tragos fríos, ambiente inigualable.',
@@ -521,6 +525,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'galloways',
     name: "Galloway's",
     emoji: '🌊',
+    img: '/images/icons/Bar4_PCR.webp',
     category: 'bar',
     price: '$$',
     taglineEs: 'Cócteles frente al mar, DJ los fines de semana.',
@@ -544,6 +549,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'pescadores',
     name: 'Pescadores',
     emoji: '🐟',
+    img: '/images/icons/Mariscos1_PCR.webp',
     category: 'mariscos',
     price: '$$',
     taglineEs: 'Pescado fresco del día, happy hour imperdible.',
@@ -566,6 +572,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'kioscos-combate',
     name: 'Kioscos de Combate',
     emoji: '🌮',
+    img: '/images/icons/Food1_PCR.webp',
     category: 'kiosko',
     price: '$',
     taglineEs: 'Frituras locales y mariscos frescos a pie de playa.',
@@ -588,6 +595,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'pizza-boqueron',
     name: 'Pizza Boquerón',
     emoji: '🍕',
+    img: '/images/icons/Food2_PCR.webp',
     category: 'casual',
     price: '$',
     taglineEs: 'Pizza sencilla, perfecta después de la playa.',
@@ -610,6 +618,7 @@ export const fullRestaurants: FullRestaurant[] = [
     id: 'cafe-boqueron',
     name: 'Café Boquerón',
     emoji: '☕',
+    img: '/images/icons/Coffee2_PCR.webp',
     category: 'cafe',
     price: '$',
     taglineEs: 'Café puertorriqueño y desayuno criollo.',
@@ -630,12 +639,12 @@ export const fullRestaurants: FullRestaurant[] = [
   },
 ]
 
-export const foodCategoryMeta: Record<FoodCategory, { es: string; en: string; icon: string }> = {
-  mariscos:      { es: 'Mariscos',      en: 'Seafood',       icon: '🦞' },
-  bar:           { es: 'Bares',         en: 'Bars',          icon: '🍹' },
-  casual:        { es: 'Casual',        en: 'Casual',        icon: '🍽️' },
-  kiosko:        { es: 'Kioscos',       en: 'Kiosks',        icon: '🌮' },
-  cafe:          { es: 'Café',          en: 'Café',          icon: '☕' },
+export const foodCategoryMeta: Record<FoodCategory, { es: string; en: string; icon: string; img?: string }> = {
+  mariscos:      { es: 'Mariscos',      en: 'Seafood',       icon: '🦞', img: '/images/icons/Mariscos1_PCR.webp' },
+  bar:           { es: 'Bares',         en: 'Bars',          icon: '🍹', img: '/images/icons/Bar4_PCR.webp' },
+  casual:        { es: 'Casual',        en: 'Casual',        icon: '🍽️', img: '/images/icons/Food2_PCR.webp' },
+  kiosko:        { es: 'Kioscos',       en: 'Kiosks',        icon: '🌮', img: '/images/icons/Food1_PCR.webp' },
+  cafe:          { es: 'Café',          en: 'Café',          icon: '☕', img: '/images/icons/Coffee2_PCR.webp' },
   internacional: { es: 'Internacional', en: 'International', icon: '🌍' },
 }
 
@@ -663,7 +672,7 @@ export const mapPins: MapPin[] = [
   // ── BEACHES ──
   {
     id: 'playa-sucia',
-    svgPin: '/pins/beach-sucia.svg',
+    svgPin: '/images/icons/PinPCR_Red_Beach.webp',
     type: 'beach',
     nameEs: 'Playa Sucia',
     nameEn: 'Playa Sucia',
@@ -676,7 +685,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'playa-buye',
-    svgPin: '/pins/beach-buye.svg',
+    svgPin: '/images/icons/PinPCR_Red_BeachShell.webp',
     type: 'beach',
     nameEs: 'Playa Buyé',
     nameEn: 'Playa Buyé',
@@ -689,7 +698,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'combate',
-    svgPin: '/pins/beach-combate.svg',
+    svgPin: '/images/icons/PinPCR_Red_Palma.webp',
     type: 'beach',
     nameEs: 'Playa Combate',
     nameEn: 'Combate Beach',
@@ -702,7 +711,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'balneario',
-    svgPin: '/pins/beach-balneario.svg',
+    svgPin: '/images/icons/PinPCR_Red_BeachShell.webp',
     type: 'beach',
     nameEs: 'Balneario Boquerón',
     nameEn: 'Balneario Boquerón',
@@ -716,7 +725,7 @@ export const mapPins: MapPin[] = [
   // ── RESTAURANTS & BARS ──
   {
     id: 'map-el-bohio',
-    svgPin: '/pins/food-mariscos.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant',
     nameEs: 'El Bohío',
     nameEn: 'El Bohío',
@@ -729,7 +738,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-shamar',
-    svgPin: '/pins/food-bar.svg',
+    svgPin: '/images/icons/PinPCR_Green_Music.webp',
     type: 'bar',
     nameEs: 'Shamar Bar & Grill',
     nameEn: 'Shamar Bar & Grill',
@@ -742,7 +751,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-galloways',
-    svgPin: '/pins/food-bar.svg',
+    svgPin: '/images/icons/PinPCR_Green_Music.webp',
     type: 'bar',
     nameEs: "Galloway's",
     nameEn: "Galloway's",
@@ -755,7 +764,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-pescadores',
-    svgPin: '/pins/food-mariscos.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant',
     nameEs: 'Pescadores',
     nameEn: 'Pescadores',
@@ -768,7 +777,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-kioscos',
-    svgPin: '/pins/food-kiosko.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant',
     nameEs: 'Kioscos Combate',
     nameEn: 'Combate Kiosks',
@@ -782,7 +791,7 @@ export const mapPins: MapPin[] = [
   // ── ATTRACTIONS ──
   {
     id: 'map-faro',
-    svgPin: '/pins/attraction-faro.svg',
+    svgPin: '/images/icons/PinPCR_Red_Faro.webp',
     type: 'attraction',
     nameEs: 'Faro Los Morrillos',
     nameEn: 'Los Morrillos Lighthouse',
@@ -794,7 +803,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-salinas',
-    svgPin: '/pins/attraction-salinas.svg',
+    svgPin: '/images/icons/PinPCR_Green_Flower.webp',
     type: 'attraction',
     nameEs: 'Las Salinas',
     nameEn: 'Salt Flats',
@@ -806,7 +815,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-bosque',
-    svgPin: '/pins/attraction-bosque.svg',
+    svgPin: '/images/icons/PinPCR_Green_Faro.webp',
     type: 'attraction',
     nameEs: 'Bosque Seco',
     nameEn: 'Dry Forest Reserve',
@@ -818,7 +827,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-pueblo',
-    svgPin: '/pins/attraction-pueblo.svg',
+    svgPin: '/images/icons/PinPCR_Green_Music.webp',
     type: 'attraction',
     nameEs: 'Pueblo de Boquerón',
     nameEn: 'Boquerón Village',
@@ -831,7 +840,7 @@ export const mapPins: MapPin[] = [
   // ── TONIGHT EVENTS ──
   {
     id: 'map-sunset-event',
-    svgPin: '/pins/event-sunset.svg',
+    svgPin: '/images/icons/PinPCR_Red_Faro.webp',
     type: 'event',
     nameEs: 'Atardecer — 6:00pm',
     nameEn: 'Sunset — 6:00pm',
@@ -843,7 +852,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-salsa-event',
-    svgPin: '/pins/event-salsa.svg',
+    svgPin: '/images/icons/PinPCR_Green_Music.webp',
     type: 'event',
     nameEs: 'Salsa en Vivo — 7:30pm',
     nameEn: 'Live Salsa — 7:30pm',
@@ -858,7 +867,7 @@ export const mapPins: MapPin[] = [
   // Beaches
   {
     id: 'map-joyuda',
-    svgPin: '/pins/beach-buye.svg',
+    svgPin: '/images/icons/PinPCR_Yellow_Palma.webp',
     type: 'beach' as PinType,
     nameEs: 'Playa Joyuda',
     nameEn: 'Joyuda Beach',
@@ -871,7 +880,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-playuela',
-    svgPin: '/pins/beach-sucia.svg',
+    svgPin: '/images/icons/PinPCR_Red_Beach.webp',
     type: 'beach' as PinType,
     nameEs: 'Playuela',
     nameEn: 'Playuela Beach',
@@ -885,7 +894,7 @@ export const mapPins: MapPin[] = [
   // More Boquerón restaurants
   {
     id: 'map-blue-iguana',
-    svgPin: '/pins/food-bar.svg',
+    svgPin: '/images/icons/PinPCR_Green_Music.webp',
     type: 'bar' as PinType,
     nameEs: 'Blue Iguana',
     nameEn: 'Blue Iguana',
@@ -898,7 +907,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-pika-pika',
-    svgPin: '/pins/food-mariscos.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant' as PinType,
     nameEs: 'Pika Pika',
     nameEn: 'Pika Pika',
@@ -911,7 +920,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-marios',
-    svgPin: '/pins/food-mariscos.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant' as PinType,
     nameEs: "Mario's Café",
     nameEn: "Mario's Café",
@@ -924,7 +933,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-kioscos-boqueron',
-    svgPin: '/pins/food-kiosko.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant' as PinType,
     nameEs: 'Kioscos del Pueblo',
     nameEn: 'Village Kiosks',
@@ -938,7 +947,7 @@ export const mapPins: MapPin[] = [
   // More attractions
   {
     id: 'map-refugio',
-    svgPin: '/pins/attraction-bosque.svg',
+    svgPin: '/images/icons/PinPCR_Green_Faro.webp',
     type: 'attraction' as PinType,
     nameEs: 'Refugio de Vida Silvestre',
     nameEn: 'Wildlife Refuge',
@@ -950,7 +959,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-cabo-rojo-town',
-    svgPin: '/pins/attraction-pueblo.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'attraction' as PinType,
     nameEs: 'Pueblo de Cabo Rojo',
     nameEn: 'Cabo Rojo Town',
@@ -962,7 +971,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-punta-ostiones',
-    svgPin: '/pins/beach-sucia.svg',
+    svgPin: '/images/icons/PinPCR_Yellow_Palma.webp',
     type: 'beach' as PinType,
     nameEs: 'Punta Ostiones',
     nameEn: 'Punta Ostiones',
@@ -975,7 +984,7 @@ export const mapPins: MapPin[] = [
   },
   {
     id: 'map-el-faro-restaurant',
-    svgPin: '/pins/food-mariscos.svg',
+    svgPin: '/images/icons/PinPCR_Green_Palma.webp',
     type: 'restaurant' as PinType,
     nameEs: 'El Faro Restaurant',
     nameEn: 'El Faro Restaurant',

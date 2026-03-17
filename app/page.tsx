@@ -250,7 +250,12 @@ export default function Home() {
             <div key={i} className="flex-shrink-0 min-w-[148px] p-4 cursor-pointer hover:bg-[rgba(26,122,110,0.05)] transition-colors"
               style={{ borderRight: i < plans.length - 1 ? '1px solid var(--rule)' : 'none' }}>
               <div className="w-6 h-0.5 mb-2.5 rounded-sm" style={{ background: p.color }} />
-              <div className="text-xl mb-2">{p.icon}</div>
+              <div className="mb-2" style={{ height: 36 }}>
+                {(p as any).img
+                  ? <img src={(p as any).img} alt={lang==='es'?p.nameEs:p.nameEn} style={{ width: 36, height: 36, objectFit: 'contain' }} onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
+                  : <span className="text-xl">{p.icon}</span>
+                }
+              </div>
               <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: '0.86rem', fontWeight: 700, color: 'var(--ink)', marginBottom: 4, lineHeight: 1.2 }}>
                 {lang === 'es' ? p.nameEs : p.nameEn}
               </div>

@@ -30,14 +30,17 @@ function ZoneCard({ score, lang }: { score: CrowdScore; lang: string }) {
         height: '100%',
         transition: 'border-color 0.15s',
       }}>
-        {/* Zone name + emoji */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
-          <div>
-            <span style={{ fontSize: '1.1rem', marginRight: 6 }}>{zone.emoji}</span>
-            <span style={{ fontFamily: "'Libre Baskerville', serif", fontWeight: 700, fontSize: '0.88rem', color: '#fff' }}>
-              {lang === 'es' ? zone.nameEs : zone.nameEn}
-            </span>
-          </div>
+        {/* Zone name + icon */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+          <img
+            src={zone.img}
+            alt={lang === 'es' ? zone.nameEs : zone.nameEn}
+            style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+          <span style={{ fontFamily: "'Libre Baskerville', serif", fontWeight: 700, fontSize: '0.88rem', color: '#fff', lineHeight: 1.2 }}>
+            {lang === 'es' ? zone.nameEs : zone.nameEn}
+          </span>
         </div>
 
         {/* Crowd level badge */}

@@ -118,13 +118,16 @@ export default function FoodPage() {
                 style={{
                   fontFamily: "'Barlow Condensed',sans-serif",
                   fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-                  padding: '10px 14px', cursor: 'pointer', background: 'transparent', whiteSpace: 'nowrap',
+                  padding: '8px 14px', cursor: 'pointer', background: 'transparent', whiteSpace: 'nowrap',
                   color: active ? 'var(--ink)' : 'var(--muted)',
                   borderRight: '1px solid var(--rule)',
                   borderBottom: active ? '3px solid var(--teal)' : '3px solid transparent',
-                  display: 'flex', alignItems: 'center', gap: 5,
+                  display: 'flex', alignItems: 'center', gap: 6, flexDirection: 'column',
                 }}>
-                <span>{cat.icon}</span>
+                {(cat as any).img
+                  ? <img src={(cat as any).img} alt={lang === 'es' ? cat.es : cat.en} style={{ width: 28, height: 28, objectFit: 'contain' }} onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
+                  : <span style={{ fontSize: '1.1rem' }}>{cat.icon}</span>
+                }
                 <span>{lang === 'es' ? cat.es : cat.en}</span>
               </button>
             )
@@ -164,15 +167,12 @@ export default function FoodPage() {
                 )}
 
                 <div style={{ padding: '14px 18px', display: 'grid', gridTemplateColumns: '48px 1fr auto', gap: 12, alignItems: 'start' }}>
-                  {/* emoji */}
-                  <div style={{ width: 48, height: 48, background: 'var(--warm-white)', border: '1px solid var(--rule)', borderRadius: 4, overflow: 'hidden', flexShrink: 0, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
-                    <img
-                      src={`/images/food/${r.id}.webp`}
-                      alt={r.name}
-                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                    />
-                    {r.emoji}
+                  {/* icon */}
+                  <div style={{ width: 52, height: 52, background: 'var(--warm-white)', border: '1px solid var(--rule)', borderRadius: 4, overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4 }}>
+                    {(r as any).img
+                      ? <img src={(r as any).img} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
+                      : <span style={{ fontSize: '1.5rem' }}>{r.emoji}</span>
+                    }
                   </div>
 
                   {/* info */}
