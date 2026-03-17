@@ -48,6 +48,7 @@ export default function AdminPage() {
   const [settings, setSettings] = useState<Record<string, string>>({})
   const [pinOverrides, setPinOverrides] = useState<Record<string, boolean>>({})
   const [listings, setListings] = useState<any[]>([])
+  const [dynamicMapPins, setDynamicMapPins] = useState<any[]>([])
 
   // New event form
   const [newEvent, setNewEvent] = useState({
@@ -84,15 +85,16 @@ export default function AdminPage() {
 
   const loadAll = useCallback(async () => {
     const h = { 'x-admin-password': password }
-    const [rRes, bRes, eRes, sRes, pRes, lRes] = await Promise.all([
+    const [rRes, bRes, eRes, sRes, pRes, lRes, dpRes] = await Promise.all([
       fetch('/api/admin/restaurants', { headers: h }),
       fetch('/api/admin/beaches', { headers: h }),
       fetch('/api/admin/events', { headers: h }),
       fetch('/api/admin/settings', { headers: h }),
       fetch('/api/admin/pins', { headers: h }),
       fetch('/api/listings', { headers: { ...h, 'Content-Type': 'application/json' } }),
+      fetch('/api/admin/map-pins'),
     ])
-    const [r, b, e, st, p, l] = await Promise.all([rRes.json(), bRes.json(), eRes.json(), sRes.json(), pRes.json(), lRes.ok ? lRes.json() : []])
+    const [r, b, e, st, p, l, dp] = await Promise.all([rRes.json(), bRes.json(), eRes.json(), sRes.json(), pRes.json(), lRes.ok ? lRes.json() : [], dpRes.ok ? dpRes.json() : []])
     setRestaurants(Array.isArray(r) ? r : [])
     const bMap: Record<string, any> = {}
     if (Array.isArray(b)) b.forEach((row: any) => { bMap[row.slug] = row })
@@ -103,6 +105,7 @@ export default function AdminPage() {
     if (Array.isArray(p)) p.forEach((row: any) => { pMap[row.pin_id] = row.visible })
     setPinOverrides(pMap)
     setListings(Array.isArray(l) ? l : [])
+    setDynamicMapPins(Array.isArray(dp) ? dp : [])
   }, [password])
 
   useEffect(() => { if (authed) loadAll() }, [authed, loadAll])
@@ -385,9 +388,12 @@ export default function AdminPage() {
         <div style={s.section}>
           <h2 style={s.h2}>Map Pin Visibility</h2>
           <p style={{ fontSize: '0.78rem', color: '#7a9a7a', marginBottom: 16, lineHeight: 1.6 }}>
-            Toggle individual pins on or off. Useful for temporarily hiding a closed business or adding seasonal locations.
+            Toggle static pins on or off. Dynamic pins added via the restaurant form appear below.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+
+          {/* Static pins */}
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', marginBottom: 8 }}>Static Pins ({mapPins.length})</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 24 }}>
             {mapPins.map((pin: any) => {
               const visible = pinOverrides[pin.id] !== false
               return (
@@ -410,6 +416,36 @@ export default function AdminPage() {
               )
             })}
           </div>
+
+          {/* Dynamic pins */}
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#2ba99a', marginBottom: 8 }}>
+            Dynamic Pins — Added via Admin ({dynamicMapPins.length})
+          </div>
+          {dynamicMapPins.length === 0 ? (
+            <p style={{ fontSize: '0.78rem', color: '#4a6a4a', fontStyle: 'italic' }}>No dynamic pins yet. Add a restaurant with coordinates to create one.</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {dynamicMapPins.map((pin: any) => (
+                <div key={pin.pin_id} style={{ ...s.card, padding: '10px 14px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+                    <div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#fff' }}>{pin.name_es}</div>
+                      <div style={{ fontSize: '0.65rem', color: '#7a9a7a', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{pin.type}</div>
+                    </div>
+                    <button style={{ padding: '4px 10px', borderRadius: 3, border: 'none', cursor: 'pointer', fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.65rem', fontWeight: 700, background: '#3a1a1a', color: '#e05a3a' }}
+                      onClick={async () => {
+                        await fetch('/api/admin/map-pins', { method: 'DELETE', headers: headers(), body: JSON.stringify({ pin_id: pin.pin_id }) })
+                        showSaved('Pin removed ✓')
+                        loadAll()
+                      }}>Remove</button>
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: '#4a8a7a', fontFamily: 'monospace' }}>
+                    {pin.lat}, {pin.lng}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -465,23 +501,49 @@ function RestaurantEditor({ slug, existing, headers, onSaved }: { slug: string; 
   const defaultHours = () => Object.fromEntries(
     ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(d => [d, { open: '11:00', close: '22:00', closed: false }])
   )
-  const [data, setData] = useState({
-    name: existing?.name || slug.replace(/-/g, ' '),
-    hours: existing?.hours || defaultHours(),
+  const [data, setData] = useState<any>({
+    name:            existing?.name            || slug.replace(/-/g, ' '),
+    category:        existing?.category        || 'mariscos',
+    price:           existing?.price           || '$$',
+    address:         existing?.address         || 'Boquerón, Cabo Rojo, PR',
+    phone:           existing?.phone           || '',
+    website:         existing?.website         || '',
+    description:     existing?.description     || '',
+    hours:           existing?.hours           || defaultHours(),
     status_override: existing?.status_override || '',
-    special_offer: existing?.special_offer || '',
-    stars: existing?.stars || '',
-    sponsored: existing?.sponsored || false,
-    featured: existing?.featured || false,
-    active: existing?.active !== false,
+    special_offer:   existing?.special_offer   || '',
+    stars:           existing?.stars           || '',
+    sponsored:       existing?.sponsored       || false,
+    featured:        existing?.featured        || false,
+    active:          existing?.active !== false,
+    lat:             existing?.lat ? String(existing.lat) : '',
+    lng:             existing?.lng ? String(existing.lng) : '',
   })
   const [open, setOpen] = useState(false)
 
   const save = async () => {
     await fetch('/api/admin/restaurants', {
       method: 'POST', headers,
-      body: JSON.stringify({ ...data, slug, category: 'mariscos', price: '$$', address: 'Boquerón, PR' })
+      body: JSON.stringify({ ...data, slug })
     })
+    // Update map pin coordinates if provided
+    if (data.lat && data.lng) {
+      await fetch('/api/admin/map-pins', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          id: `map-${slug}`,
+          nameEs: data.name,
+          nameEn: data.name,
+          type: 'restaurant',
+          lat: parseFloat(data.lat),
+          lng: parseFloat(data.lng),
+          svgPin: '/images/icons/PinPCR_Green_Palma.webp',
+          tagEs: `${data.special_offer || ''}`,
+          tagEn: `${data.special_offer || ''}`,
+          mapLink: `https://maps.google.com/?q=${encodeURIComponent(data.name + ' Boqueron Puerto Rico')}`,
+        }),
+      })
+    }
     onSaved()
   }
 
@@ -501,28 +563,91 @@ function RestaurantEditor({ slug, existing, headers, onSaved }: { slug: string; 
 
       {open && (
         <div style={{ padding: '0 16px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ display: 'flex', gap: 10, marginTop: 12, marginBottom: 10 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Display Name</label>
+          {/* ── BASIC INFO ── */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 12, marginBottom: 10 }}>
+            <div>
+              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Name</label>
               <input style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
-                value={data.name} onChange={e => setData(p => ({...p, name: e.target.value}))} />
+                value={data.name} onChange={e => setData((p: any) => ({...p, name: e.target.value}))} />
             </div>
-            <div style={{ width: 160 }}>
+            <div>
               <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Status Override</label>
               <select style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
-                value={data.status_override} onChange={e => setData(p => ({...p, status_override: e.target.value}))}>
+                value={data.status_override} onChange={e => setData((p: any) => ({...p, status_override: e.target.value}))}>
                 <option value="">Auto (use hours)</option>
                 <option value="open">Force Open</option>
                 <option value="closed">Force Closed</option>
               </select>
             </div>
           </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 80px', gap: 10, marginBottom: 10 }}>
+            <div>
+              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Category</label>
+              <select style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
+                value={(data as any).category || 'mariscos'} onChange={e => setData((p: any) => ({...p, category: e.target.value}))}>
+                {['mariscos','bar','casual','kiosko','cafe','internacional'].map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Address</label>
+              <input style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
+                value={(data as any).address || ''} onChange={e => setData((p: any) => ({...p, address: e.target.value}))}
+                placeholder="Calle José De Diego, Boquerón" />
+            </div>
+            <div>
+              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Price</label>
+              <select style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
+                value={(data as any).price || '$$'} onChange={e => setData((p: any) => ({...p, price: e.target.value}))}>
+                {['$','$$','$$$'].map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+            <div>
+              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Phone</label>
+              <input style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
+                value={(data as any).phone || ''} onChange={e => setData((p: any) => ({...p, phone: e.target.value}))}
+                placeholder="(787) 255-0000" />
+            </div>
+            <div>
+              <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Website</label>
+              <input style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
+                value={(data as any).website || ''} onChange={e => setData((p: any) => ({...p, website: e.target.value}))}
+                placeholder="https://" />
+            </div>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Description</label>
+            <input style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
+              value={(data as any).description || ''} onChange={e => setData((p: any) => ({...p, description: e.target.value}))}
+              placeholder="Short description of this place..." />
+          </div>
 
           <div style={{ marginBottom: 10 }}>
             <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }}>Special Offer</label>
             <input style={{ width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' as const }}
-              value={data.special_offer} onChange={e => setData(p => ({...p, special_offer: e.target.value}))}
+              value={data.special_offer} onChange={e => setData((p: any) => ({...p, special_offer: e.target.value}))}
               placeholder="Happy hour 5-8pm · $4 Medallas" />
+          </div>
+
+          {/* Map coordinates */}
+          <div style={{ background: '#0a140a', border: '1px solid rgba(43,169,154,0.25)', borderRadius: 4, padding: '10px 12px', marginBottom: 12 }}>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#2ba99a', marginBottom: 6 }}>Map Pin Location</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.58rem', color: '#7a9a7a', display: 'block', marginBottom: 3 }}>Latitude</label>
+                <input style={{ width: '100%', padding: '6px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 3, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.8rem', outline: 'none', boxSizing: 'border-box' as const }}
+                  value={data.lat} onChange={e => setData((p: any) => ({...p, lat: e.target.value}))}
+                  placeholder="18.0003" />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.58rem', color: '#7a9a7a', display: 'block', marginBottom: 3 }}>Longitude</label>
+                <input style={{ width: '100%', padding: '6px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 3, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.8rem', outline: 'none', boxSizing: 'border-box' as const }}
+                  value={data.lng} onChange={e => setData((p: any) => ({...p, lng: e.target.value}))}
+                  placeholder="-67.1553" />
+              </div>
+            </div>
+            <div style={{ fontSize: '0.62rem', color: '#4a6a4a', marginTop: 6 }}>Right-click in Google Maps → first number is Lat, second is Lng (negative)</div>
           </div>
 
           {/* Hours grid */}
@@ -534,11 +659,11 @@ function RestaurantEditor({ slug, existing, headers, onSaved }: { slug: string; 
                 <div key={day} style={{ display: 'grid', gridTemplateColumns: '76px 1fr 1fr auto', gap: 6, alignItems: 'center', padding: '6px 10px', borderBottom: i < 6 ? '1px solid rgba(255,255,255,0.06)' : 'none', background: h.closed ? 'rgba(0,0,0,0.2)' : 'transparent' }}>
                   <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.68rem', fontWeight: 700, color: h.closed ? '#4a6a4a' : '#e8e0d0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{DAY_LABELS[day]}</span>
                   <input style={{ padding: '5px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: h.closed ? '#4a6a4a' : '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.76rem', opacity: h.closed ? 0.5 : 1 }}
-                    value={h.open} disabled={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, open: e.target.value } } }))} />
+                    value={h.open} disabled={h.closed} onChange={e => setData((p: any) => ({ ...p, hours: { ...p.hours, [day]: { ...h, open: e.target.value } } }))} />
                   <input style={{ padding: '5px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: h.closed ? '#4a6a4a' : '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.76rem', opacity: h.closed ? 0.5 : 1 }}
-                    value={h.close} disabled={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, close: e.target.value } } }))} />
+                    value={h.close} disabled={h.closed} onChange={e => setData((p: any) => ({ ...p, hours: { ...p.hours, [day]: { ...h, close: e.target.value } } }))} />
                   <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, closed: e.target.checked } } }))} />
+                    <input type="checkbox" checked={h.closed} onChange={e => setData((p: any) => ({ ...p, hours: { ...p.hours, [day]: { ...h, closed: e.target.checked } } }))} />
                     <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.58rem', color: '#7a9a7a', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Closed</span>
                   </label>
                 </div>
@@ -550,11 +675,11 @@ function RestaurantEditor({ slug, existing, headers, onSaved }: { slug: string; 
             <button style={{ padding: '9px 18px', background: '#1a7a6e', color: '#fff', border: 'none', borderRadius: 4, fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer' }}
               onClick={save}>Save →</button>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.75rem', color: '#7a9a7a' }}>
-              <input type="checkbox" checked={data.featured} onChange={e => setData(p => ({...p, featured: e.target.checked}))} />
+              <input type="checkbox" checked={data.featured} onChange={e => setData((p: any) => ({...p, featured: e.target.checked}))} />
               Featured
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.75rem', color: '#7a9a7a' }}>
-              <input type="checkbox" checked={data.sponsored} onChange={e => setData(p => ({...p, sponsored: e.target.checked}))} />
+              <input type="checkbox" checked={data.sponsored} onChange={e => setData((p: any) => ({...p, sponsored: e.target.checked}))} />
               Sponsored
             </label>
           </div>
@@ -780,11 +905,11 @@ function AddRestaurantForm({ headers, onSaved }: { headers: any; onSaved: () => 
                 <div key={day} style={{ display: 'grid', gridTemplateColumns: '76px 1fr 1fr auto', gap: 6, alignItems: 'center', padding: '6px 10px', borderBottom: i < 6 ? '1px solid rgba(255,255,255,0.06)' : 'none', background: h.closed ? 'rgba(0,0,0,0.2)' : 'transparent' }}>
                   <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.68rem', fontWeight: 700, color: h.closed ? '#4a6a4a' : '#e8e0d0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{DAY_LABELS[day]}</span>
                   <input style={{ padding: '5px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: h.closed ? '#4a6a4a' : '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.76rem', opacity: h.closed ? 0.5 : 1 }}
-                    value={h.open} disabled={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, open: e.target.value } } }))} />
+                    value={h.open} disabled={h.closed} onChange={e => setData((p: any) => ({ ...p, hours: { ...p.hours, [day]: { ...h, open: e.target.value } } }))} />
                   <input style={{ padding: '5px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: h.closed ? '#4a6a4a' : '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.76rem', opacity: h.closed ? 0.5 : 1 }}
-                    value={h.close} disabled={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, close: e.target.value } } }))} />
+                    value={h.close} disabled={h.closed} onChange={e => setData((p: any) => ({ ...p, hours: { ...p.hours, [day]: { ...h, close: e.target.value } } }))} />
                   <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, closed: e.target.checked } } }))} />
+                    <input type="checkbox" checked={h.closed} onChange={e => setData((p: any) => ({ ...p, hours: { ...p.hours, [day]: { ...h, closed: e.target.checked } } }))} />
                     <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.58rem', color: '#7a9a7a', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Closed</span>
                   </label>
                 </div>

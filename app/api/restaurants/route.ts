@@ -21,23 +21,22 @@ export async function GET() {
     // DB empty or unavailable — use data.ts only
   }
 
-  const result = fullRestaurants.map(r => {
+  // Static restaurants merged with DB overrides
+  const staticResult = fullRestaurants.map(r => {
     const dbRow = dbRestaurants[r.id]
     const hours: WeekHours | null = dbRow?.hours ?? (r as any).hours ?? null
 
-    // Status: manual override > calculated from hours
     let status: string
-    if (dbRow?.status_override === 'open')   status = 'open'
+    if (dbRow?.status_override === 'open')        status = 'open'
     else if (dbRow?.status_override === 'closed') status = 'closed'
     else status = getOpenStatus(hours)
 
-    const todayHours  = getTodayHours(hours)
+    const todayHours   = getTodayHours(hours)
     const hoursDisplay = getHoursDisplay(hours)
-    const closeTime   = todayHours?.close ? formatTime(todayHours.close) : null
+    const closeTime    = todayHours?.close ? formatTime(todayHours.close) : null
 
     return {
       ...r,
-      // DB values override data.ts if present
       name:          dbRow?.name          ?? r.name,
       description:   dbRow?.description   ?? (r as any).taglineEs ?? null,
       address:       dbRow?.address       ?? (r as any).locationEs ?? null,
@@ -46,15 +45,50 @@ export async function GET() {
       featured:      dbRow?.featured      ?? false,
       sponsored:     dbRow?.sponsored     ?? false,
       photo_url:     dbRow?.photo_url     ?? null,
-      // Live calculated fields
-      status,
-      hoursDisplay,
-      closeTime,
-      hasHours: !!hours,
+      status, hoursDisplay, closeTime, hasHours: !!hours,
     }
   })
 
-  return NextResponse.json(result, {
+  // Dynamic restaurants — only in DB, not in data.ts
+  const staticIds = new Set(fullRestaurants.map(r => r.id))
+  const dynamicResult = Object.values(dbRestaurants)
+    .filter((r: any) => !staticIds.has(r.slug))
+    .map((r: any) => {
+      const hours: WeekHours | null = r.hours ?? null
+      let status: string
+      if (r.status_override === 'open')        status = 'open'
+      else if (r.status_override === 'closed') status = 'closed'
+      else status = getOpenStatus(hours)
+
+      const todayHours   = getTodayHours(hours)
+      const hoursDisplay = getHoursDisplay(hours)
+      const closeTime    = todayHours?.close ? formatTime(todayHours.close) : null
+
+      return {
+        id:           r.slug,
+        name:         r.name,
+        emoji:        '🍽️',
+        img:          '/images/icons/Food2_PCR.webp',
+        category:     r.category ?? 'casual',
+        price:        r.price ?? '$$',
+        taglineEs:    r.description ?? '',
+        taglineEn:    r.description ?? '',
+        locationEs:   r.address ?? 'Boquerón, PR',
+        locationEn:   r.address ?? 'Boquerón, PR',
+        mustTryEs:    '',
+        mustTryEn:    '',
+        stars:        r.stars ?? 4,
+        phone:        r.phone ?? null,
+        website:      r.website ?? null,
+        mapLink:      `https://maps.google.com/?q=${encodeURIComponent(r.name + ' Boqueron Puerto Rico')}`,
+        sponsored:    r.sponsored ?? false,
+        featured:     r.featured ?? false,
+        special_offer: r.special_offer ?? null,
+        status, hoursDisplay, closeTime, hasHours: !!hours,
+      }
+    })
+
+  return NextResponse.json([...staticResult, ...dynamicResult], {
     headers: { 'Cache-Control': 'no-store' }
   })
 }
