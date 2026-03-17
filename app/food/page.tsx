@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { useLang } from '@/lib/LangContext'
 import { fullRestaurants, foodCategoryMeta, type FoodCategory } from '@/lib/data'

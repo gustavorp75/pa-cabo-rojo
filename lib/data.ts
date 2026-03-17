@@ -441,6 +441,20 @@ export const categoryMeta: Record<EventCategory, { es: string; en: string; icon:
 }
 
 
+
+// ── HOURS TYPE ───────────────────────────────────────────
+export interface DayHours { open: string; close: string; closed: boolean }
+export type WeekHours = Record<'monday'|'tuesday'|'wednesday'|'thursday'|'friday'|'saturday'|'sunday', DayHours>
+
+const openDaily = (open: string, close: string) =>
+  Object.fromEntries(['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(d => [d, { open, close, closed: false }])) as WeekHours
+
+const closedMonday = (open: string, close: string) =>
+  Object.fromEntries(['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(d => [d, { open, close, closed: d === 'monday' }])) as WeekHours
+
+const weekendOnly = (open: string, close: string) =>
+  Object.fromEntries(['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(d => [d, { open, close, closed: !['friday','saturday','sunday'].includes(d) }])) as WeekHours
+
 // ── FULL RESTAURANT DATA ──────────────────────────────────
 export type FoodCategory = 'mariscos' | 'bar' | 'casual' | 'kiosko' | 'cafe' | 'internacional'
 export type PriceRange = '$' | '$$' | '$$$'
@@ -450,6 +464,7 @@ export interface FullRestaurant {
   name: string
   emoji: string
   img?: string
+  hours?: WeekHours
   category: FoodCategory
   price: PriceRange
   descEs: string
