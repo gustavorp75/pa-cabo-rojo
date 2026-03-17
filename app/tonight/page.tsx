@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { useLang } from '@/lib/LangContext'
 import { fullEvents, categoryMeta, type EventCategory } from '@/lib/data'
@@ -16,6 +16,29 @@ const timeOrder = (ev: { time: string; ampm: string }) => {
 
 export default function TonightPage() {
   const { lang, t } = useLang()
+  const [liveEvents, setLiveEvents] = useState<any[]>([])
+  const [eventsLoaded, setEventsLoaded] = useState(false)
+  const [dataSource, setDataSource] = useState<'db'|'static'>('static')
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then(r => r.json())
+      .then(data => {
+        if (data.events?.length > 0) {
+          setLiveEvents(data.events)
+          setDataSource(data.source)
+        } else {
+          setLiveEvents(fullEvents.map(e => ({ ...e, isToday: true })))
+        }
+        setEventsLoaded(true)
+      })
+      .catch(() => {
+        setLiveEvents(fullEvents.map(e => ({ ...e, isToday: true })))
+        setEventsLoaded(true)
+      })
+  }, [])
+
+  const events = eventsLoaded ? liveEvents : fullEvents.map(e => ({ ...e, isToday: true }))
   const [activeCategory, setActiveCategory] = useState<EventCategory | 'all'>('all')
 
   const now = new Date()
@@ -187,14 +210,30 @@ export default function TonightPage() {
         </div>
       </div>
 
+      {/* ── LIVE INDICATOR ── */}
+      {dataSource === 'db' && eventsLoaded && liveEvents.length > 0 && (
+        <div style={{ padding: '8px 18px', background: 'rgba(26,122,110,0.12)', borderBottom: '1px solid rgba(26,122,110,0.2)', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#2ba99a' }} />
+          <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#2ba99a' }}>
+            {lang === 'es' ? `${liveEvents.length} eventos en tiempo real` : `${liveEvents.length} live events`}
+          </span>
+        </div>
+      )}
+
       {/* ── EVENT LIST ── */}
       <div style={{ background: 'var(--ink)', color: '#fff', borderBottom: '2px solid var(--ink)' }}>
         {filtered.length === 0 ? (
-          <div style={{ padding: '40px 18px', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', marginBottom: 12 }}>🌴</div>
-            <div style={{ fontFamily: "'Libre Baskerville',serif", color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
-              {lang === 'es' ? 'No hay eventos en esta categoría hoy.' : 'No events in this category today.'}
+          <div style={{ padding: '48px 24px', textAlign: 'center' }}>
+            <img src="/images/icons/Noche_PCR.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', opacity: 0.4, marginBottom: 12 }} />
+            <div style={{ fontFamily: "'Libre Baskerville',serif", color: 'rgba(255,255,255,0.8)', fontWeight: 700, fontSize: '0.95rem', marginBottom: 6 }}>
+              {lang === 'es' ? 'Sin eventos esta noche' : 'No events tonight'}
             </div>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, maxWidth: 260, margin: '0 auto 16px' }}>
+              {lang === 'es' ? 'Los negocios pueden publicar eventos gratis.' : 'Businesses can post events for free.'}
+            </div>
+            <a href="/listings/new" style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#2ba99a', textDecoration: 'none', border: '1px solid #2ba99a', padding: '8px 16px', borderRadius: 4, display: 'inline-block' }}>
+              {lang === 'es' ? '+ Publicar Evento' : '+ Post Event'}
+            </a>
           </div>
         ) : (
           <>

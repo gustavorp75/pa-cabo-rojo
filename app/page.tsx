@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLang } from '@/lib/LangContext'
 import { beaches, attractions, events, restaurants, plans, ui, statusLabel } from '@/lib/data'
@@ -14,6 +15,14 @@ export default function Home() {
   const { lang, t } = useLang()
   const { data: wx } = useConditions()
   const beachConds = getBeachConditions(wx ?? null)
+  const [tonightEvents, setTonightEvents] = useState<any[]>([])
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then(r => r.json())
+      .then(data => { if (data.events?.length > 0) setTonightEvents(data.events.slice(0, 3)) })
+      .catch(() => {})
+  }, [])
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
@@ -193,7 +202,7 @@ export default function Home() {
             {lang === 'es' ? 'Ver todo →' : 'Full calendar →'}
           </Link>
         </div>
-        {events.map((ev, i) => (
+        {(tonightEvents.length > 0 ? tonightEvents : events).map((ev: any, i: number) => (
           <div key={i} className="grid" style={{ gridTemplateColumns: '54px 1fr auto', borderBottom: '1px solid rgba(255,255,255,0.07)', alignItems: 'stretch' }}>
             <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: '1rem', color: 'var(--gold)', padding: '12px 0 12px 16px', lineHeight: 1.1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               {ev.time}
