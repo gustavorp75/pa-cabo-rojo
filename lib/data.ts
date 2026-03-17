@@ -286,12 +286,12 @@ export const ui = {
   navTonight:  { es: 'Noche', en: 'Tonight' },
   navMap:      { es: 'Mapa', en: 'Map' },
   // mode tabs
-  tabBeaches:  { es: '🏖️ Playas', en: '🏖️ Beaches' },
-  tabFamily:   { es: '👨‍👩‍👧 Familia', en: '👨‍👩‍👧 Family' },
-  tabSunset:   { es: '🌅 Atardecer', en: '🌅 Sunset' },
-  tabFood:     { es: '🍽️ Comida', en: '🍽️ Food' },
-  tabNight:    { es: '🎶 Nightlife', en: '🎶 Nightlife' },
-  tabCouple:   { es: '💑 Pareja', en: '💑 Couples' },
+  tabBeaches:  { es: 'Playas', en: 'Beaches' },
+  tabFamily:   { es: 'Familia', en: 'Family' },
+  tabSunset:   { es: 'Atardecer', en: 'Sunset' },
+  tabFood:     { es: 'Comida', en: 'Food' },
+  tabNight:    { es: 'Nightlife', en: 'Nightlife' },
+  tabCouple:   { es: 'Pareja', en: 'Couples' },
 }
 
 

@@ -15,6 +15,7 @@ export default function Home() {
   const { lang, t } = useLang()
   const { data: wx } = useConditions()
   const beachConds = getBeachConditions(wx ?? null)
+  const [activeTab, setActiveTab] = useState('beaches')
   const [tonightEvents, setTonightEvents] = useState<any[]>([])
 
   useEffect(() => {
@@ -102,19 +103,39 @@ export default function Home() {
       <CrowdZones />
 
       {/* ── MODE TABS ── */}
-      <div className="overflow-x-auto" style={{ borderBottom: '2px solid var(--ink)', background: 'var(--warm-white)', scrollbarWidth: 'none' }}>
-        <div className="flex min-w-max">
-          {[ui.tabBeaches, ui.tabFamily, ui.tabSunset, ui.tabFood, ui.tabNight, ui.tabCouple].map((tab, i) => (
-            <div key={i}
-              className="px-4 py-2.5 cursor-pointer"
-              style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.76rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: i === 0 ? 'var(--ink)' : 'var(--muted)', borderRight: '1px solid var(--rule)', borderBottom: i === 0 ? '3px solid var(--coral)' : '3px solid transparent', whiteSpace: 'nowrap' }}>
-              {t(tab)}
+      {(() => {
+        const tabs = [
+          { key: 'beaches',  es: 'Playas',    en: 'Beaches',   img: '/images/icons/PinPCR_Red_BeachShell.webp' },
+          { key: 'family',   es: 'Familia',   en: 'Family',    img: '/images/icons/Family2_PCR.webp' },
+          { key: 'sunset',   es: 'Atardecer', en: 'Sunset',    img: '/images/icons/Faro_PCR.webp' },
+          { key: 'food',     es: 'Comida',    en: 'Food',      img: '/images/icons/Food2_PCR.webp' },
+          { key: 'nightlife',es: 'Nightlife', en: 'Nightlife', img: '/images/icons/Noche_PCR.webp' },
+          { key: 'couple',   es: 'Pareja',    en: 'Couples',   img: '/images/icons/PinPCR_Couple1.webp' },
+        ]
+        return (
+          <div className="overflow-x-auto" style={{ borderBottom: '2px solid var(--ink)', background: 'var(--warm-white)', scrollbarWidth: 'none' }}>
+            <div className="flex min-w-max">
+              {tabs.map((tab) => {
+                const active = activeTab === tab.key
+                return (
+                  <button key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: active ? 'var(--ink)' : 'var(--muted)', borderRight: '1px solid var(--rule)', borderBottom: active ? '3px solid var(--coral)' : '3px solid transparent', whiteSpace: 'nowrap', background: 'transparent', cursor: 'pointer', padding: '8px 14px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: 64 }}>
+                    <img src={tab.img} alt={lang === 'es' ? tab.es : tab.en}
+                      style={{ width: 28, height: 28, objectFit: 'contain', opacity: active ? 1 : 0.45, transition: 'opacity 0.15s' }}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display='none' }} />
+                    <span>{lang === 'es' ? tab.es : tab.en}</span>
+                  </button>
+                )
+              })}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        )
+      })()}
 
       {/* ── BEACHES ── */}
+      {(activeTab === 'beaches' || activeTab === 'family') && (
+      <>
       <div className="flex justify-between items-center px-4 pt-3 pb-2.5" style={{ borderBottom: '1px solid var(--rule)' }}>
         <span style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--muted)', letterSpacing: '0.2em' }} className="text-[0.6rem] font-bold uppercase">
           {t(ui.bestBeaches)}
@@ -158,7 +179,12 @@ export default function Home() {
         })}
       </div>
 
+      </>
+      )}
+
       {/* ── ATTRACTIONS ── */}
+      {(activeTab === 'beaches' || activeTab === 'sunset') && (
+      <>
       <div className="flex justify-between items-center px-4 pt-3 pb-2.5" style={{ borderBottom: '1px solid var(--rule)' }}>
         <span style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--muted)', letterSpacing: '0.2em' }} className="text-[0.6rem] font-bold uppercase">
           {t(ui.attractions)}
@@ -194,7 +220,11 @@ export default function Home() {
         ))}
       </div>
 
+      </>
+      )}
+
       {/* ── TONIGHT ── */}
+      {(activeTab === 'nightlife' || activeTab === 'beaches') && (
       <div style={{ background: 'var(--ink)', color: '#fff', borderBottom: '2px solid var(--ink)' }}>
         <div className="flex justify-between items-baseline px-4 pt-4 pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: '1.8rem', letterSpacing: '0.06em' }}>{t(ui.tonight)}</span>
@@ -221,7 +251,10 @@ export default function Home() {
         ))}
       </div>
 
+      )}
+
       {/* ── FOOD ── */}
+      {(activeTab === 'food' || activeTab === 'couple') && (
       <div style={{ borderBottom: '2px solid var(--ink)' }}>
         <div className="flex justify-between items-center px-4 pt-3 pb-2.5" style={{ borderBottom: '1px solid var(--rule)' }}>
           <span style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--muted)', letterSpacing: '0.2em' }} className="text-[0.6rem] font-bold uppercase">{t(ui.openNow)}</span>
@@ -249,7 +282,10 @@ export default function Home() {
         ))}
       </div>
 
+      )}
+
       {/* ── PLANS ── */}
+      {(activeTab === 'family' || activeTab === 'couple' || activeTab === 'sunset') && (
       <div style={{ borderBottom: '2px solid var(--ink)' }}>
         <div className="px-4 pt-3 pb-2.5" style={{ borderBottom: '1px solid var(--rule)' }}>
           <span style={{ fontFamily: "'Barlow Condensed',sans-serif", color: 'var(--muted)', letterSpacing: '0.2em' }} className="text-[0.6rem] font-bold uppercase">{t(ui.quickPlans)}</span>
@@ -275,6 +311,8 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      )}
 
       {/* ── BIZ CTA ── */}
       <Link href="/listings/new" className="grid hover:bg-[var(--sand)] transition-colors px-4 py-5 gap-4"
