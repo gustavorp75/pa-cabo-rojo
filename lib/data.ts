@@ -29,6 +29,7 @@ export interface Beach {
 
 export interface Attraction {
   slug: string
+  photo?: string
   emoji: string
   gradient: string
   nameEs: string
@@ -217,10 +218,10 @@ export const beaches: Beach[] = [
 
 // ── ATTRACTIONS ──────────────────────────────────────────
 export const attractions: Attraction[] = [
-  { slug: 'faro', emoji: '🏛️', gradient: 'from-[#0d2d3f] to-[#1a7a6e]', nameEs: 'Faro Los Morrillos', nameEn: 'Los Morrillos Lighthouse', subEs: 'Atardecer · Acantilados · Gratis', subEn: 'Sunset · Cliffs · Free' },
-  { slug: 'salinas', emoji: '🌊', gradient: 'from-[#c9943a] to-[#e05a3a]', nameEs: 'Las Salinas', nameEn: 'Salt Flats', subEs: 'Salinas · Agua rosada', subEn: 'Salt Flats · Pink water' },
-  { slug: 'pueblo', emoji: '🎶', gradient: 'from-[#1a4a5c] to-[#0d2d3f]', nameEs: 'Pueblo de Boquerón', nameEn: 'Boquerón Village', subEs: 'Comida · Vida nocturna', subEn: 'Food · Nightlife · Walk' },
-  { slug: 'bosque', emoji: '🌿', gradient: 'from-[#1a3d1a] to-[#2d7a4a]', nameEs: 'Bosque Seco', nameEn: 'Dry Forest Reserve', subEs: 'Naturaleza · Aves · Senderos', subEn: 'Wildlife · Trails · Birds' },
+  { slug: 'faro', photo: '/images/attractions/faro-los-morrillos.webp', emoji: '🏛️', gradient: 'from-[#0d2d3f] to-[#1a7a6e]', nameEs: 'Faro Los Morrillos', nameEn: 'Los Morrillos Lighthouse', subEs: 'Atardecer · Acantilados · Gratis', subEn: 'Sunset · Cliffs · Free' },
+  { slug: 'salinas', photo: '/images/attractions/las-salinas.webp', emoji: '🌊', gradient: 'from-[#c9943a] to-[#e05a3a]', nameEs: 'Las Salinas', nameEn: 'Salt Flats', subEs: 'Salinas · Agua rosada', subEn: 'Salt Flats · Pink water' },
+  { slug: 'pueblo', photo: '/images/attractions/pueblo-boqueron.webp', emoji: '🎶', gradient: 'from-[#1a4a5c] to-[#0d2d3f]', nameEs: 'Pueblo de Boquerón', nameEn: 'Boquerón Village', subEs: 'Comida · Vida nocturna', subEn: 'Food · Nightlife · Walk' },
+  { slug: 'bosque', photo: '/images/attractions/bosque-seco.webp', emoji: '🌿', gradient: 'from-[#1a3d1a] to-[#2d7a4a]', nameEs: 'Bosque Seco', nameEn: 'Dry Forest Reserve', subEs: 'Naturaleza · Aves · Senderos', subEn: 'Wildlife · Trails · Birds' },
 ]
 
 // ── EVENTS ───────────────────────────────────────────────

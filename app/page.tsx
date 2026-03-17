@@ -200,7 +200,7 @@ export default function Home() {
             style={{ borderRight: i < attractions.length - 1 ? '1px solid var(--rule)' : 'none' }}>
             <div className={`h-[90px] relative overflow-hidden`} style={{background:`linear-gradient(135deg,${a.gradient.match(/from-\[([^\]]+)\]/)?.[1]??'#0d2d3f'},${a.gradient.match(/to-\[([^\]]+)\]/)?.[1]??'#1a7a6e'})`}}>
               <img
-                src={`/images/attractions/${a.slug}.webp`}
+                src={(a as any).photo ?? `/images/attractions/${a.slug}.webp`}
                 alt={lang==='es'?a.nameEs:a.nameEn}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}
