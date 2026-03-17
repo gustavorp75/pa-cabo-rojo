@@ -9,6 +9,8 @@ export interface Conditions {
   weather: { code: number; emoji: string; descEs: string; descEn: string }
   sunset: string
   ticker: { es: string; en: string }
+  beachOverrides: Record<string, { condition: string; noteEs: string; noteEn: string }>
+  eventImpacts: Record<string, string>
   updatedAt: string
 }
 

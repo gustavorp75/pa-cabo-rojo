@@ -3,7 +3,7 @@ import { getDb } from '@/lib/db'
 import { verifyAdmin } from '@/lib/adminAuth'
 
 export async function GET(req: NextRequest) {
-  if (!await verifyAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // Allow public read for map visibility — POST still requires auth
   const db = getDb()
   const rows = await db`SELECT * FROM map_pin_overrides ORDER BY pin_id`
   return NextResponse.json(rows)

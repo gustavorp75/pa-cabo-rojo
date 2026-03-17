@@ -1,5 +1,4 @@
 'use client'
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLang } from '@/lib/LangContext'
 import { useConditions } from '@/lib/useConditions'
@@ -87,18 +86,9 @@ function ZoneCard({ score, lang }: { score: CrowdScore; lang: string }) {
 export default function CrowdZones() {
   const { lang } = useLang()
   const { data: wx } = useConditions()
-  const [eventOverrides, setEventOverrides] = useState<Record<string, any>>({})
-
-  useEffect(() => {
-    // Load event overrides from settings (no auth needed for reading event impacts)
-    fetch('/api/conditions')
-      .then(() => {}) // already have weather
-      .catch(() => {})
-    // Try to get event settings — won't work without auth but that's ok
-    // event overrides are optional enhancement
-  }, [])
-
-  const scores = getAllCrowdScores(wx ?? null, eventOverrides)
+  // Event impacts now come from the conditions API (embedded in wx)
+  const eventImpacts = wx?.eventImpacts ?? {}
+  const scores = getAllCrowdScores(wx ?? null, eventImpacts as any)
 
   // Sort: busy first so most actionable info is visible
   const sorted = [...scores].sort((a, b) => b.score - a.score)

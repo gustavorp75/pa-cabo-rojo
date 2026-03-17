@@ -13,6 +13,7 @@ export interface BeachCondition {
 
 // Calculate real beach conditions from weather API data
 export function getBeachConditions(wx: Conditions | null): Record<string, BeachCondition> {
+  const dbOverrides = wx?.beachOverrides ?? {}
 
   // Fallback if no weather data yet
   if (!wx) {
@@ -170,10 +171,23 @@ export function getBeachConditions(wx: Conditions | null): Record<string, BeachC
     }
   }
 
-  return {
+  const calculated = {
     'playa-sucia': getLabel(susicaStatus,  '', '', sucicaNoteEs, sucicaNoteEn),
     'playa-buye':  getLabel(buyeStatus,    '', '', buyeNoteEs,   buyeNoteEn),
     'combate':     getLabel(combateStatus, '', '', combateNoteEs, combateNoteEn),
     'balneario':   getLabel(balnearioStatus, '', '', balnearioNoteEs, balnearioNoteEn),
   }
+
+  // Apply DB overrides — admin manual settings take priority
+  const result: Record<string, BeachCondition> = { ...calculated }
+  for (const [slug, override] of Object.entries(dbOverrides)) {
+    if (override.condition && result[slug]) {
+      result[slug] = getLabel(
+        override.condition as BeachStatus, '', '',
+        override.noteEs ?? result[slug].noteEs,
+        override.noteEn ?? result[slug].noteEn,
+      )
+    }
+  }
+  return result
 }
