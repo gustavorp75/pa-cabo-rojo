@@ -161,13 +161,23 @@ export default function AdminPage() {
             Set real hours and the site auto-calculates open/closed. Use status override to force open or closed regardless of hours.
           </p>
 
-          {['el-bohio','shamar','galloways','pescadores','kioscos-combate','pizza-boqueron','cafe-boqueron'].map(slug => {
-            const existing = restaurants.find(r => r.slug === slug)
-            return (
-              <RestaurantEditor key={slug} slug={slug} existing={existing}
-                headers={headers()} onSaved={() => { showSaved(); loadAll() }} />
-            )
-          })}
+          {/* Existing restaurants from DB */}
+          {restaurants.length > 0
+            ? restaurants.map((r: any) => (
+                <RestaurantEditor key={r.slug} slug={r.slug} existing={r}
+                  headers={headers()} onSaved={() => { showSaved(); loadAll() }} />
+              ))
+            : ['el-bohio','shamar','galloways','pescadores','kioscos-combate','pizza-boqueron','cafe-boqueron'].map(slug => {
+                const existing = restaurants.find((r: any) => r.slug === slug)
+                return (
+                  <RestaurantEditor key={slug} slug={slug} existing={existing}
+                    headers={headers()} onSaved={() => { showSaved(); loadAll() }} />
+                )
+              })
+          }
+
+          {/* Add new restaurant */}
+          <AddRestaurantForm headers={headers()} onSaved={() => { showSaved('Restaurant added ✓'); loadAll() }} />
         </div>
       )}
 
@@ -609,6 +619,141 @@ function BeachEditor({ slug, name, override, headers, onSaved }: { slug: string;
             await fetch('/api/admin/beaches', { method: 'POST', headers, body: JSON.stringify({ slug, condition: null, note_es: null, note_en: null, override_until: null }) })
             onSaved()
           }}>Clear Override</button>
+      )}
+    </div>
+  )
+}
+
+
+// ── ADD RESTAURANT FORM ───────────────────────────────────
+function AddRestaurantForm({ headers, onSaved }: { headers: any; onSaved: () => void }) {
+  const [open, setOpen] = useState(false)
+  const defaultHours = () => Object.fromEntries(
+    ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(d => [d, { open: '11:00', close: '22:00', closed: false }])
+  )
+  const [data, setData] = useState({
+    name: '', slug: '', category: 'mariscos', price: '$$',
+    description: '', address: 'Boquerón, Cabo Rojo, PR',
+    phone: '', website: '', special_offer: '', stars: '4',
+    hours: defaultHours(), status_override: '',
+    sponsored: false, featured: false,
+  })
+
+  const slugify = (name: string) =>
+    name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+
+  const save = async () => {
+    if (!data.name) return
+    const slug = data.slug || slugify(data.name)
+    await fetch('/api/admin/restaurants', {
+      method: 'POST', headers,
+      body: JSON.stringify({ ...data, slug, active: true }),
+    })
+    setData({ name: '', slug: '', category: 'mariscos', price: '$$', description: '', address: 'Boquerón, Cabo Rojo, PR', phone: '', website: '', special_offer: '', stars: '4', hours: defaultHours(), status_override: '', sponsored: false, featured: false })
+    setOpen(false)
+    onSaved()
+  }
+
+  const inputStyle: React.CSSProperties = { width: '100%', padding: '8px 12px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4, color: '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' }
+  const labelStyle: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7a9a7a', display: 'block', marginBottom: 4 }
+
+  return (
+    <div style={{ marginTop: 16 }}>
+      {!open ? (
+        <button style={{ padding: '10px 20px', background: 'transparent', border: '1px dashed rgba(43,169,154,0.5)', borderRadius: 4, color: '#2ba99a', fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', width: '100%' }}
+          onClick={() => setOpen(true)}>
+          + Add New Restaurant
+        </button>
+      ) : (
+        <div style={{ background: '#1a2a1a', border: '1px solid #2ba99a', borderRadius: 6, padding: 16 }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontWeight: 700, fontSize: '1rem', color: '#fff', marginBottom: 14 }}>+ New Restaurant</div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+            <div>
+              <label style={labelStyle}>Name *</label>
+              <input style={inputStyle} value={data.name} placeholder="El Nuevo Rancho"
+                onChange={e => setData(p => ({ ...p, name: e.target.value, slug: slugify(e.target.value) }))} />
+            </div>
+            <div>
+              <label style={labelStyle}>Slug (auto)</label>
+              <input style={inputStyle} value={data.slug} placeholder="el-nuevo-rancho"
+                onChange={e => setData(p => ({ ...p, slug: e.target.value }))} />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 80px', gap: 10, marginBottom: 10 }}>
+            <div>
+              <label style={labelStyle}>Category</label>
+              <select style={inputStyle} value={data.category} onChange={e => setData(p => ({ ...p, category: e.target.value }))}>
+                {['mariscos','bar','casual','kiosko','cafe','internacional'].map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Address</label>
+              <input style={inputStyle} value={data.address} onChange={e => setData(p => ({ ...p, address: e.target.value }))} />
+            </div>
+            <div>
+              <label style={labelStyle}>Price</label>
+              <select style={inputStyle} value={data.price} onChange={e => setData(p => ({ ...p, price: e.target.value }))}>
+                {['$','$$','$$$'].map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+            <div>
+              <label style={labelStyle}>Phone</label>
+              <input style={inputStyle} value={data.phone} placeholder="(787) 555-0000"
+                onChange={e => setData(p => ({ ...p, phone: e.target.value }))} />
+            </div>
+            <div>
+              <label style={labelStyle}>Website</label>
+              <input style={inputStyle} value={data.website} placeholder="https://"
+                onChange={e => setData(p => ({ ...p, website: e.target.value }))} />
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 10 }}>
+            <label style={labelStyle}>Description</label>
+            <input style={inputStyle} value={data.description} placeholder="Short description..."
+              onChange={e => setData(p => ({ ...p, description: e.target.value }))} />
+          </div>
+
+          <div style={{ marginBottom: 10 }}>
+            <label style={labelStyle}>Special Offer</label>
+            <input style={inputStyle} value={data.special_offer} placeholder="Happy hour 5-8pm · $4 Medallas"
+              onChange={e => setData(p => ({ ...p, special_offer: e.target.value }))} />
+          </div>
+
+          {/* Hours */}
+          <label style={{ ...labelStyle, marginBottom: 6 }}>Hours</label>
+          <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, overflow: 'hidden', marginBottom: 14 }}>
+            {(['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] as const).map((day, i) => {
+              const DAY_LABELS: Record<string, string> = { monday:'Mon', tuesday:'Tue', wednesday:'Wed', thursday:'Thu', friday:'Fri', saturday:'Sat', sunday:'Sun' }
+              const h = (data.hours as any)[day]
+              return (
+                <div key={day} style={{ display: 'grid', gridTemplateColumns: '76px 1fr 1fr auto', gap: 6, alignItems: 'center', padding: '6px 10px', borderBottom: i < 6 ? '1px solid rgba(255,255,255,0.06)' : 'none', background: h.closed ? 'rgba(0,0,0,0.2)' : 'transparent' }}>
+                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.68rem', fontWeight: 700, color: h.closed ? '#4a6a4a' : '#e8e0d0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{DAY_LABELS[day]}</span>
+                  <input style={{ padding: '5px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: h.closed ? '#4a6a4a' : '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.76rem', opacity: h.closed ? 0.5 : 1 }}
+                    value={h.open} disabled={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, open: e.target.value } } }))} />
+                  <input style={{ padding: '5px 8px', background: '#0f1a14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: h.closed ? '#4a6a4a' : '#e8e0d0', fontFamily: "'Barlow', sans-serif", fontSize: '0.76rem', opacity: h.closed ? 0.5 : 1 }}
+                    value={h.close} disabled={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, close: e.target.value } } }))} />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
+                    <input type="checkbox" checked={h.closed} onChange={e => setData(p => ({ ...p, hours: { ...p.hours, [day]: { ...h, closed: e.target.checked } } }))} />
+                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.58rem', color: '#7a9a7a', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Closed</span>
+                  </label>
+                </div>
+              )
+            })}
+          </div>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button style={{ padding: '9px 18px', background: '#1a7a6e', color: '#fff', border: 'none', borderRadius: 4, fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer' }}
+              onClick={save}>Save Restaurant →</button>
+            <button style={{ padding: '9px 18px', background: 'transparent', color: '#7a9a7a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer' }}
+              onClick={() => setOpen(false)}>Cancel</button>
+          </div>
+        </div>
       )}
     </div>
   )
