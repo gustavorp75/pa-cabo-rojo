@@ -490,6 +490,7 @@ export interface FullRestaurant {
 export const fullRestaurants: FullRestaurant[] = [
   {
     id: 'el-bohio',
+    hours: openDaily('11:00', '22:00'),
     name: 'El Bohío',
     emoji: '🦞',
     img: '/images/icons/Mariscos1_PCR.webp',
@@ -513,6 +514,7 @@ export const fullRestaurants: FullRestaurant[] = [
   },
   {
     id: 'shamar',
+    hours: openDaily('11:00', '00:00'),
     name: 'Shamar Bar & Grill',
     emoji: '🎶',
     img: '/images/icons/Music3_PCR.webp',
@@ -538,6 +540,7 @@ export const fullRestaurants: FullRestaurant[] = [
   },
   {
     id: 'galloways',
+    hours: openDaily('11:00', '00:00'),
     name: "Galloway's",
     emoji: '🌊',
     img: '/images/icons/Bar4_PCR.webp',
@@ -562,6 +565,7 @@ export const fullRestaurants: FullRestaurant[] = [
   },
   {
     id: 'pescadores',
+    hours: closedMonday('11:00', '22:00'),
     name: 'Pescadores',
     emoji: '🐟',
     img: '/images/icons/Mariscos1_PCR.webp',
@@ -585,6 +589,7 @@ export const fullRestaurants: FullRestaurant[] = [
   },
   {
     id: 'kioscos-combate',
+    hours: weekendOnly('10:00', '18:00'),
     name: 'Kioscos de Combate',
     emoji: '🌮',
     img: '/images/icons/Food1_PCR.webp',
@@ -608,6 +613,7 @@ export const fullRestaurants: FullRestaurant[] = [
   },
   {
     id: 'pizza-boqueron',
+    hours: openDaily('12:00', '22:00'),
     name: 'Pizza Boquerón',
     emoji: '🍕',
     img: '/images/icons/Food2_PCR.webp',
@@ -631,6 +637,7 @@ export const fullRestaurants: FullRestaurant[] = [
   },
   {
     id: 'cafe-boqueron',
+    hours: openDaily('07:00', '14:00'),
     name: 'Café Boquerón',
     emoji: '☕',
     img: '/images/icons/Coffee2_PCR.webp',
