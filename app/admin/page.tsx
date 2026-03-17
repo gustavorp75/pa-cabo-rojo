@@ -637,6 +637,7 @@ function AddRestaurantForm({ headers, onSaved }: { headers: any; onSaved: () => 
     phone: '', website: '', special_offer: '', stars: '4',
     hours: defaultHours(), status_override: '',
     sponsored: false, featured: false,
+    lat: '', lng: '',
   })
 
   const slugify = (name: string) =>
@@ -649,7 +650,26 @@ function AddRestaurantForm({ headers, onSaved }: { headers: any; onSaved: () => 
       method: 'POST', headers,
       body: JSON.stringify({ ...data, slug, active: true }),
     })
-    setData({ name: '', slug: '', category: 'mariscos', price: '$$', description: '', address: 'Boquerón, Cabo Rojo, PR', phone: '', website: '', special_offer: '', stars: '4', hours: defaultHours(), status_override: '', sponsored: false, featured: false })
+    // Also create a map pin if coordinates were provided
+    if (data.lat && data.lng) {
+      await fetch('/api/admin/map-pins', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          id: `map-${slug}`,
+          nameEs: data.name,
+          nameEn: data.name,
+          type: data.category === 'bar' ? 'bar' : 'restaurant',
+          lat: parseFloat(data.lat),
+          lng: parseFloat(data.lng),
+          svgPin: data.category === 'bar' ? '/images/icons/PinPCR_Green_Music.webp' : '/images/icons/PinPCR_Green_Palma.webp',
+          tagEs: `${data.category} · ${data.price} · ${data.address}`,
+          tagEn: `${data.category} · ${data.price} · ${data.address}`,
+          mapLink: `https://maps.google.com/?q=${encodeURIComponent(data.name + ' Boquerón Puerto Rico')}`,
+          active: true,
+        }),
+      })
+    }
+    setData({ name: '', slug: '', category: 'mariscos', price: '$$', description: '', address: 'Boquerón, Cabo Rojo, PR', phone: '', website: '', special_offer: '', stars: '4', hours: defaultHours(), status_override: '', sponsored: false, featured: false, lat: '', lng: '' })
     setOpen(false)
     onSaved()
   }
@@ -723,6 +743,31 @@ function AddRestaurantForm({ headers, onSaved }: { headers: any; onSaved: () => 
             <label style={labelStyle}>Special Offer</label>
             <input style={inputStyle} value={data.special_offer} placeholder="Happy hour 5-8pm · $4 Medallas"
               onChange={e => setData(p => ({ ...p, special_offer: e.target.value }))} />
+          </div>
+
+          {/* Map coordinates */}
+          <div style={{ background: '#0f1a14', border: '1px solid rgba(43,169,154,0.3)', borderRadius: 4, padding: 12, marginBottom: 14 }}>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#2ba99a', marginBottom: 8 }}>
+              Map Pin Location
+            </div>
+            <div style={{ fontSize: '0.72rem', color: '#7a9a7a', marginBottom: 10, lineHeight: 1.5 }}>
+              Right-click any spot in Google Maps → copy the coordinates. Leave blank to skip map pin.
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div>
+                <label style={labelStyle}>Latitude</label>
+                <input style={inputStyle} value={(data as any).lat} placeholder="18.0003"
+                  onChange={e => setData(p => ({ ...p, lat: e.target.value } as any))} />
+              </div>
+              <div>
+                <label style={labelStyle}>Longitude</label>
+                <input style={inputStyle} value={(data as any).lng} placeholder="-67.1553"
+                  onChange={e => setData(p => ({ ...p, lng: e.target.value } as any))} />
+              </div>
+            </div>
+            <div style={{ fontSize: '0.66rem', color: '#4a6a4a', marginTop: 8 }}>
+              Tip: In Google Maps, right-click on the exact location and the coordinates appear at the top of the menu. Click them to copy.
+            </div>
           </div>
 
           {/* Hours */}

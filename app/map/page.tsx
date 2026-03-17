@@ -26,13 +26,37 @@ export default function MapPage() {
   const [mapLoaded, setMapLoaded] = useState(false)
   const [mapError, setMapError] = useState(false)
   const [hiddenPins, setHiddenPins] = useState<Set<string>>(new Set())
+  const [dynamicPins, setDynamicPins] = useState<MapPin[]>([])
 
   useEffect(() => {
+    // Load pin visibility overrides
     fetch('/api/admin/pins', { headers: { 'x-admin-password': 'public' } })
       .then(r => r.ok ? r.json() : [])
       .then((rows: any[]) => {
         const hidden = new Set(rows.filter((r: any) => !r.visible).map((r: any) => r.pin_id as string))
         setHiddenPins(hidden)
+      })
+      .catch(() => {})
+
+    // Load dynamically added pins from admin
+    fetch('/api/admin/map-pins')
+      .then(r => r.ok ? r.json() : [])
+      .then((rows: any[]) => {
+        const pins: MapPin[] = rows.map((r: any) => ({
+          id:      r.pin_id,
+          svgPin:  r.svg_pin ?? '/images/icons/PinPCR_Green_Palma.webp',
+          type:    r.type as any,
+          nameEs:  r.name_es,
+          nameEn:  r.name_en,
+          tagEs:   r.tag_es ?? '',
+          tagEn:   r.tag_en ?? '',
+          lat:     parseFloat(r.lat),
+          lng:     parseFloat(r.lng),
+          emoji:   '📍',
+          color:   '#1a7a6e',
+          mapLink: r.map_link ?? '',
+        }))
+        setDynamicPins(pins)
       })
       .catch(() => {})
   }, [])
@@ -107,7 +131,8 @@ export default function MapPage() {
       markersRef.current.forEach(m => m.remove())
       markersRef.current.clear()
 
-      const filtered = mapPins.filter(p => activeTypes.has(p.type) && !hiddenPins.has(p.id))
+      const allPins = [...mapPins, ...dynamicPins]
+      const filtered = allPins.filter(p => activeTypes.has(p.type) && !hiddenPins.has(p.id))
 
       const currentZoom = mapRef.current!.getZoom()
       const getScale = (z: number) => Math.max(0.45, Math.min(1.1, (z - 8) / 6))
@@ -153,7 +178,7 @@ export default function MapPage() {
     })
   }, [mapLoaded, activeTypes, lang])
 
-  const visibleCount = mapPins.filter(p => activeTypes.has(p.type) && !hiddenPins.has(p.id)).length
+  const visibleCount = [...mapPins, ...dynamicPins].filter(p => activeTypes.has(p.type) && !hiddenPins.has(p.id)).length
 
   return (
     <div style={{ background: 'var(--cream)', height: '100dvh', display: 'flex', flexDirection: 'column' }}>
