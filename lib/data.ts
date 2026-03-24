@@ -1267,7 +1267,9 @@ export const mapPins: MapPin[] = [
     status: 'open' as const,
     mapLink: 'https://maps.google.com/?q=Sunset+Sunrise+Boqueron+Puerto+Rico',
   },
-]: Record<PinType, { es: string; en: string; color: string; emoji: string }> = {
+]
+
+export const pinTypeMeta: Record<PinType, { es: string; en: string; color: string; emoji: string }> = {
   beach:      { es: 'Playas',      en: 'Beaches',      color: '#1a9b8a', emoji: '🏖️' },
   restaurant: { es: 'Comida',      en: 'Food',         color: '#c9943a', emoji: '🍽️' },
   bar:        { es: 'Bares',       en: 'Bars',         color: '#7c3aed', emoji: '🍹' },
