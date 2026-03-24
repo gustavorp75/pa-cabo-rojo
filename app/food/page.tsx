@@ -1,8 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import Link from 'next/link'
 import { useLang } from '@/lib/LangContext'
-import { fullRestaurants, foodCategoryMeta, type FoodCategory } from '@/lib/data'
+import { foodCategoryMeta, type FoodCategory } from '@/lib/data'
 import TopBar from '@/components/TopBar'
 import Nameplate from '@/components/Nameplate'
 import Ticker from '@/components/Ticker'
@@ -37,35 +36,18 @@ export default function FoodPage() {
   const { lang } = useLang()
   const [activeCategory, setActiveCategory] = useState<FoodCategory | 'all'>('all')
   const [activeStatus, setActiveStatus] = useState<'all' | 'open'>('open')
-  const [liveData, setLiveData] = useState<Record<string, any>>({})
-  const [statusLoaded, setStatusLoaded] = useState(false)
+  const [restaurants, setRestaurants] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/restaurants')
       .then(r => r.json())
       .then((data: any[]) => {
-        const map: Record<string, any> = {}
-        data.forEach(r => { map[r.id] = r })
-        setLiveData(map)
-        setStatusLoaded(true)
+        setRestaurants(data)
+        setLoading(false)
       })
-      .catch(() => setStatusLoaded(true))
+      .catch(() => setLoading(false))
   }, [])
-
-  // Merge live status into static restaurant data
-  const restaurants = useMemo(() =>
-    fullRestaurants.map(r => {
-      const live = liveData[r.id]
-      if (!live) return r
-      return {
-        ...r,
-        status: live.status ?? r.status,
-        hoursDisplay: live.hoursDisplay ?? '',
-        closeTime: live.closeTime ?? null,
-        special_offer: live.special_offer ?? (r as any).specialOffer ?? null,
-      }
-    }),
-  [liveData])
 
   const filtered = useMemo(() => {
     return restaurants.filter(r => {
@@ -76,6 +58,14 @@ export default function FoodPage() {
   }, [activeCategory, activeStatus, restaurants])
 
   const openCount = restaurants.filter(r => r.status === 'open' || r.status === 'closing-soon').length
+
+  const categoryCount = useMemo(() => {
+    const counts: Record<string, number> = {}
+    restaurants.forEach(r => {
+      counts[r.category] = (counts[r.category] ?? 0) + 1
+    })
+    return counts
+  }, [restaurants])
 
   return (
     <div style={{ background: 'var(--cream)', minHeight: '100vh' }}>
@@ -134,11 +124,11 @@ export default function FoodPage() {
               borderRight: '1px solid var(--rule)',
               borderBottom: activeCategory === 'all' ? '3px solid var(--coral)' : '3px solid transparent',
             }}>
-            {lang === 'es' ? 'Todo' : 'All'} ({fullRestaurants.length})
+            {lang === 'es' ? 'Todo' : 'All'} ({restaurants.length})
           </button>
 
           {(Object.entries(foodCategoryMeta) as [FoodCategory, typeof foodCategoryMeta[FoodCategory]][]).map(([key, cat]) => {
-            const count = fullRestaurants.filter(r => r.category === key).length
+            const count = categoryCount[key] ?? 0
             if (count === 0) return null
             const active = activeCategory === key
             return (
@@ -166,7 +156,33 @@ export default function FoodPage() {
 
       {/* ── RESTAURANT LIST ── */}
       <div style={{ borderBottom: '2px solid var(--ink)' }}>
-        {filtered.length === 0 ? (
+        {loading ? (
+          <>
+            {[1,2,3,4].map(i => (
+              <div key={i} style={{ borderBottom: '1px solid var(--rule)', padding: '14px 18px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr auto', gap: 12, alignItems: 'start' }}>
+                  {/* icon skeleton */}
+                  <div style={{ width: 52, height: 52, borderRadius: 4, background: 'var(--rule)', opacity: 0.5 }} className="animate-pulse" />
+                  {/* text skeletons */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingTop: 4 }}>
+                    <div style={{ height: 14, width: '55%', borderRadius: 2, background: 'var(--rule)' }} className="animate-pulse" />
+                    <div style={{ height: 10, width: '80%', borderRadius: 2, background: 'var(--rule)', opacity: 0.6 }} className="animate-pulse" />
+                    <div style={{ height: 10, width: '40%', borderRadius: 2, background: 'var(--rule)', opacity: 0.4 }} className="animate-pulse" />
+                  </div>
+                  {/* right skeletons */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end', paddingTop: 4 }}>
+                    <div style={{ height: 10, width: 48, borderRadius: 2, background: 'var(--rule)' }} className="animate-pulse" />
+                    <div style={{ height: 10, width: 36, borderRadius: 2, background: 'var(--rule)', opacity: 0.5 }} className="animate-pulse" />
+                  </div>
+                </div>
+                {/* directions link skeleton */}
+                <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
+                  <div style={{ height: 10, width: 90, borderRadius: 2, background: 'var(--rule)', opacity: 0.4 }} className="animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </>
+        ) : filtered.length === 0 ? (
           <div style={{ padding: '40px 18px', textAlign: 'center' }}>
             <div style={{ fontSize: '2rem', marginBottom: 12 }}>🍽️</div>
             <div style={{ fontFamily: "'Libre Baskerville',serif", color: 'var(--muted)', fontSize: '0.9rem' }}>
@@ -175,7 +191,7 @@ export default function FoodPage() {
           </div>
         ) : (
           filtered.map((r, i) => {
-            const cat = foodCategoryMeta[r.category]
+            const cat = foodCategoryMeta[r.category as FoodCategory] ?? { icon: '🍽️', es: r.category, en: r.category, img: null }
             const statusColor = r.status === 'open' ? '#16a34a' : r.status === 'closing-soon' ? '#c9943a' : r.status === 'closed' ? '#e05a3a' : 'var(--muted)'
             const statusText = r.status === 'open'
               ? (lang === 'es' ? 'Abierto' : 'Open')
@@ -221,7 +237,9 @@ export default function FoodPage() {
                     </div>
 
                     <div style={{ fontFamily: "'Libre Baskerville',serif", fontSize: '0.72rem', color: 'var(--muted)', fontStyle: 'italic', marginBottom: 5, lineHeight: 1.4 }}>
-                      {lang === 'es' ? r.taglineEs : r.taglineEn}
+                      {lang === 'es'
+                        ? (r.taglineEs ?? r.description ?? '')
+                        : (r.taglineEn ?? r.description ?? '')}
                     </div>
 
                     {/* category + location */}
@@ -231,17 +249,21 @@ export default function FoodPage() {
                       </span>
                       <span style={{ color: 'var(--rule)' }}>·</span>
                       <span style={{ fontSize: '0.66rem', color: 'var(--muted)' }}>
-                        📍 {lang === 'es' ? r.locationEs : r.locationEn}
+                        📍 {lang === 'es'
+                          ? (r.locationEs ?? r.address ?? 'Boquerón, PR')
+                          : (r.locationEn ?? r.address ?? 'Boquerón, PR')}
                       </span>
                     </div>
 
                     {/* must try */}
+                    {(lang === 'es' ? (r.mustTryEs || '') : (r.mustTryEn || '')) && (
                     <div style={{ fontSize: '0.68rem', color: 'var(--muted)', lineHeight: 1.45 }}>
                       <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink)', fontSize: '0.6rem' }}>
                         {lang === 'es' ? 'Pide: ' : 'Order: '}
                       </span>
                       {lang === 'es' ? r.mustTryEs : r.mustTryEn}
                     </div>
+                    )}
                   </div>
 
                   {/* right — status + stars + hours */}
